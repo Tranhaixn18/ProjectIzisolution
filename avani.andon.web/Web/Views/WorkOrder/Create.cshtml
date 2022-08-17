@@ -1,0 +1,159 @@
+﻿@model avSVAW.Models.WorkOrderForm
+@{
+
+    ViewBag.Title = Resources.Language.WorkOrder;
+    ViewBag.SubTitle = Resources.Language.Create + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Create", "WorkOrder", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                 listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_NoStart,
+                    Value = "0",
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_InProduction,
+                    Value = "1",
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_Complete,
+                    Value = "2"
+                });
+            <div class="box-body">
+
+                <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Code, Resources.Language.Code, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12 unique" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ProductId, Resources.Language.Product, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        @Html.DropDownListFor(model => model.ProductId, Model.Products, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Quantity, Resources.Language.Quality, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        @Html.TextBoxFor(model => model.Quantity, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+
+
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Deadline, Resources.Language.Deadline, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div id="datepicker" class="input-group input-append">
+                            @Html.TextBoxFor(model => model.Deadline, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+  
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer form-group">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                        <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                            <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                        </a>
+                    </div>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+                }
+
+            </div>
+
+    </div>
+</div>  
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+	   <script src="~/assets/js/jquery.validate.js"></script>
+   
+        
+   
+    <script type="text/javascript">
+        
+
+        $(document).ready(function () {
+
+            $.validator.addMethod("unique", function (value, element) {
+                var isExist = 0;
+                if (value != '') {
+                    $.ajax({
+                        url: "/WorkOrder/CheckExistCode?Id=0&Code=" + value,
+                        type: 'get',
+                        async: false, 
+                        dataType: "json",
+                        success: function (data) {
+                            if (data) {
+                                isExist = data;
+                            } else { isExist = 0;}
+                        }
+                    });
+                }
+                return isExist > 0 ? false : true;
+            }, "Dữ liệu bị trùng lặp.");
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                    Code: {
+                        required: true
+                    },
+                    ProductId: {
+                        required: true
+                    },
+                    Quantity: {
+                        required: true,
+                        number: true
+                    },
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+
+
+
+            $("#ProductId").select2();
+            $('#datepicker').datetimepicker({
+                pickTime: false
+            });
+           
+        });
+        </script>
+    }

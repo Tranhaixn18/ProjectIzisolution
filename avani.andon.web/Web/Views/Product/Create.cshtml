@@ -1,0 +1,177 @@
+﻿@model avSVAW.Models.ProductForm
+@{
+
+    ViewBag.Title = Resources.Language.Product;
+    ViewBag.SubTitle = Resources.Language.Create + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_InActive,
+                    Value = "0",
+                    Selected = true
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_Active,
+                    Value = "1"
+
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "" + @Resources.Language.Status_Delete,
+                    Value = "2"
+                });
+
+                <div class="box-body">
+
+                    <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Code, Resources.Language.Code, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, Resources.Language.Name, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Speed, Resources.Language.Speed, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Speed, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Speed, "", new { @class = "text-danger" })
+
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Unit, Resources.Language.Unit, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Unit, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-10 col-sm-10 col-xs-12">
+                            @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Status, Resources.Language.Status, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.DropDownListFor(model => model.Status, listItems, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+
+                    </div>
+
+
+                    <!-- /.box-body -->
+                    <div class="box-footer form-group">
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                            <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                                <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                            </a>
+                        </div>
+
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script src="~/assets/js/jquery.validate.js"></script>
+
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            $.validator.addMethod("unique", function (value, element) {
+                var isExist = 0;
+                if (value != '') {
+                    $.ajax({
+                        url: "/Product/CheckExistCode?Id=0&Code=" + value,
+                        type: 'get',
+                        async: false,
+                        dataType: "json",
+                        success: function (data) {
+                            if (data) {
+                                isExist = data;
+                            } else { isExist = 0;}
+                        }
+                    });
+                }
+                return isExist > 0 ? false : true;
+            }, "Dữ liệu bị trùng lặp.");
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                    Code: {
+                        required: true,
+                        unique:true
+                    },
+                    Name: {
+                        required: true
+                    },
+                    Speed: {
+                        required: true,
+                        number: true
+                    }, Unit: {
+                        required: true,
+                        number: true
+                    },
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+            $("#ProductId").select2();
+            $('#datepicker').datetimepicker({
+                pickTime: false
+            });
+
+        });
+    </script>
+}

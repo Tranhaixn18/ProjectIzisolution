@@ -1,0 +1,240 @@
+﻿@model List<avSVAW.Models.WorkOrderForm>
+
+@section header{
+    @ViewBag.SubTitle
+}
+@section Styles {
+    <style>
+        th{
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.WorkOrder</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("Index", "WorkOrder", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.FromDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.ToDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divToDate" class="input-group input-append">
+                                <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+
+                        <div class="col-sm-1">
+                            <label class="control-label">Trạng thái</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select id="Status" name="Status" class="form-control col-md-7 col-xs-12">
+                                @{
+                                    var strSelect = "";
+                                    for (int i = 0; i < 7; i++)
+                                    {
+                                        if (ViewBag.Status[i].Value == ViewBag.Statuss.ToString())
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+                                        <option value="@ViewBag.Status[i].Value" @strSelect>@ViewBag.Status[i].Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <table id="WorkOrderTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.WorkOrder</th>
+                            <th>Mã sản phẩm</th>
+                            <th>@Resources.Language.Product</th>
+                            <th>@Resources.Language.Line</th>
+                            <th>@Resources.Language.PlanStart</th>
+                            <th>@Resources.Language.PlanFinish</th>
+                            <th>@Resources.Language.Quantity</th>
+                            <th>@Resources.Language.QuantityPlanned</th>
+                            <th>Trạng thái</th>
+                            <th>@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                                var strStatus = "label-primary";
+                                if (f.Status == 1) //Đang chạy
+                                {
+                                    strStatus = "label-warning";
+                                }
+                                if (f.Status == 2) //tạm dừng
+                                {
+                                    strStatus = "label-danger";
+                                }
+
+                                if (f.Status == 3) //Hoàn thành
+                                {
+                                    strStatus = "label-success";
+                                }
+                                if (f.Status == 4) //Quá hạn
+                                {
+                                    strStatus = "label-success";
+                                }
+                                if (f.Status == 5) //Hủy bỏ
+                                {
+                                    strStatus = "label-success";
+                                }
+
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@f.ProductionName</td>
+                                    <td>@f.ProductCode</td>
+                                    <td>@f.ProductName</td>
+                                    <td>@f.LineName</td>
+                                    <td>@f.PlanStart</td>
+                                    <td>@f.PlanFinish</td>
+                                    <td>
+                                        @if (f.Quantity > 0)
+                                        {
+                                            @Html.Raw(Convert.ToInt32(f.Quantity).ToString("#,##0").Replace(".", ","))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+                                    <td style="text-align:center">
+                                        @if (f.QuantityPlanned > 0)
+                                        {
+                                            @Html.Raw(Convert.ToInt32(f.QuantityPlanned).ToString("#,##0").Replace(".", ","))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+
+
+                                    <td>
+                                        <span class="label @strStatus">@f.StatusName</span>
+
+
+                                    </td>
+                                    <td>
+                                        <a href="/WorkOrder/Detail/@f.Id" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-search"></i>&nbsp; @Resources.Language.View &nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="importcsv" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">@Resources.Language.Import</h3>
+                <button type="button" class="close" style="margin-top:-32px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("Importexcel1", "WorkOrder", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12"> <b>@Resources.Language.ExportExcel</b></div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-12">
+                            <input type="file" name="FileUpload1" />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="save-reason" class="btn btn-primary">@Resources.Language.Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Resources.Language.Back</button>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script type="text/javascript">
+        
+        $('#divFromDate').datetimepicker({
+            pickTime: false
+        });
+        $('#divToDate').datetimepicker({
+            pickTime: false
+        });
+
+        $('#button-search').on('click', function () {
+            $('#hello').show().find('div, hidden').prop('disabled', false);
+        });
+
+    </script>
+}

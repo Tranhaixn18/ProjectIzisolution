@@ -1,0 +1,302 @@
+﻿
+@model List<avSVAW.Models.DownTimeForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+    var sessionLang = Session[Common.GlobalConstants.LANG_SESSION];
+    string lang = "";
+    if (sessionLang != null)
+    {
+        lang = Convert.ToString(sessionLang);
+    }
+    int iMax = ViewBag.lstNode.Count > 10 ? 10 : ViewBag.lstNode.Count;
+}
+@section header{
+   @Resources.Language.DownTimeReport
+}
+
+<style>
+    .working-percent {
+        float:left;
+        background-color: forestgreen;
+        color:white;
+        text-align:center;
+    }
+    .un-working-percent {
+        float:right;
+        background-color: gray;
+    }
+
+</style>
+<script src="~/assets/js/Chart.min.js"></script>
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("DownTimeRerpot", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.FromDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.ToDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divToDate" class="input-group input-append">
+                            <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @if (Common.UserFunction.USER_LINE_LEADER(session.Role))
+                    {
+
+                    }
+                    else
+                    {
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                    }
+
+
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;
+                            &nbsp;
+                            <button type="button" id="showBar" class="btn btn-primary"><i class="fa fa-pie-chart"></i>&nbsp;&nbsp;@Resources.Language.ShowBar</button>
+
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    @{
+                        int StopCount = 0, iCount =0;
+                        double TotalStopTime = 0;
+                    }
+                    <table id="CallLog" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">#</th>
+                                <th>@Resources.Language.Loss</th>
+                                @for (int i = 0; i < iMax; i++)
+                                {
+                                    <th>@ViewBag.lstNode[i].Name</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                iCount = iCount + 1;
+                                <tr>
+                                    <td style="text-align:center">
+                                        @iCount
+                                    </td>
+
+                                    <td>
+
+                                        @if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                                        {
+                                            @item.LossEN
+                                        }
+                                        else
+                                        {
+                                            @item.LossVN
+                                        }
+
+                                    </td>
+
+                                    @for (int i = 0; i < iMax; i++)
+                                    {
+                                        int j = i + 1;
+                                        string ret = "";
+                                        long _hour = 0;
+                                        long _min = 0;
+                                        long _secound = 0;
+                                        if (item.iNode[i] > 0)
+                                        {
+                                            double TotalMinute = item.iNode[i];
+                                            _hour = (long)TotalMinute / 3600;
+                                            _min = (long)TotalMinute / 60 % 60;
+                                          //  _secound = (long)TotalMinute % 60;
+                                             ret = _hour.ToString("00") + ":" + _min.ToString("00") ;
+                                        }
+                                        <td>@ret</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <canvas id="BarChart" height="30%" width="80%"></canvas>
+                    </div>
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@foreach(var edf in ViewBag.lstEventD)
+{
+    <input type="hidden" id="ED_@edf.Id" value="@edf.Name_EN" data-name="@edf.Name_EN" data-nameen="@edf.Name_EN" data-namevi="@edf.Name_VN"  data-color="@edf.Color" />
+}
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+<script type="text/javascript">
+        @*function ExportExcel() {
+            var url = '@Url.Action("ExportListLossToExcel", "Report")';
+            var _fromDate = $('#StartDate').val();
+            var _toDate = $('#EndDate').val();
+            var _nodetype = $("#LineId").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?StartDate=' + _fromDate + '&EndDate=' + _toDate + '&LineId=' + _nodetype;
+            window.location.href = ExcelURL;
+        };*@
+
+        $(function () {
+            $('#inventory').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        })
+    $(document).ready(function () {
+
+           $("#showBar").click(function () {
+                $("#BarChart").show();
+                $("#CallLog").hide();
+                 var ctx = document.getElementById('BarChart');
+               var label = [];
+                @for (int i = 0; i < iMax; i++)
+                                {
+                                   @Html.Raw("label.push('"+ViewBag.lstNode[i].Name +"');");
+                                }
+
+                var datasets = [];
+                var lang =  $("#langId").val().toLowerCase();
+                @foreach(var c in Model)
+                {
+                     @Html.Raw("var data_child=[];");
+                     @Html.Raw("var object={};");
+                     if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                        {
+                                        @Html.Raw("object.label='"+c.LossEN+"';");
+                                        }
+                                        else
+                                        {
+                                              @Html.Raw("object.label='"+c.LossVN+"';");
+                                        }
+                     @Html.Raw("object.backgroundColor='"+c.Color+"';");
+                            for (int i = 0; i < iMax; i++)
+                                    {
+
+                                       @Html.Raw("data_child.push("+c.iNode[i]+");");
+                                    }
+
+
+
+                       @Html.Raw("object.data=data_child;");
+                     @Html.Raw("datasets.push(object);");
+                }
+
+                var data = {
+                    labels: label,
+                        datasets: datasets
+                }
+               var option = {
+                     legend: {
+        display: true,
+        position: 'top'
+    }, barValueSpacing: 5,
+    barDatasetSpacing: 1,
+                           tooltips: {
+                                callbacks: {
+                                   label: function (tooltipItem) {
+                                        var TotalMinute = Number(tooltipItem.yLabel);
+                                        var _hour = parseFloat(TotalMinute / 60).toFixed(0);
+                                        _hour = _hour < 10? "0" + _hour: _hour;
+                                        var _min = parseFloat(TotalMinute % 60).toFixed(0);
+                                        _min = _min < 10? "0" + _min: _min;
+                                        var ret = _hour + ":" + _min;
+                                        @if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                                            {
+                                            @Html.Raw("return 'Duration:'+ret;");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("return 'Thời gian:'+ret;");
+                                        }
+
+                                    }
+                                }
+                            },
+                           responsive: true,
+					        scales: {
+						       xAxes: [{
+							        stacked: true
+						        }],
+						        yAxes: [{
+							        stacked: true
+						        }]
+					        }
+                        };
+                 var myChart1 = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: option
+                });
+            });
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+</script>
+
+
+}
+

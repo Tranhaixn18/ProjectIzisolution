@@ -1,0 +1,58 @@
+﻿
+@model List<Model.DataModel.tblLineOnline> 
+@{
+    /**/
+    ViewBag.Title = Resources.Language.UpdateOnlineValue;
+  
+}
+@section header{
+    @Resources.Language.UpdateOnlineValue
+}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.Language.Line</th>
+                                    <th>@Resources.Language.Status</th>
+                                    <th>@Resources.Language.Plan</th>
+                                    <th>@Resources.Language.Target</th>
+                                    <th>@Resources.Language.Actual</th>
+                                    <th>@Resources.Language.NoofStop</th>
+                                    <th>@Resources.Language.StopDuration (HH:mm)</th>
+                                    <th>@Resources.Language.Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    long StopDuration = 0;
+                                    if (item.StopDuration != null)
+                                    {
+                                        StopDuration = Convert.ToInt64(item.StopDuration);
+                                    }
+
+                                    //long minutes = (StopDuration % 60);
+                                    long minutes = (StopDuration / 60) % 60;
+                                    long hours = StopDuration / 3600;
+                                    string time = hours.ToString("00") + ":" + minutes.ToString("00");
+                                    <tr>
+                                        <td>@item.LineName</td>
+                                        <td>@item.RunningStatus</td>
+                                        <td>@item.Plan</td>
+                                        <td>@item.Target</td>
+                                        <td>@item.Actual</td>
+                                        <td>@item.NumberOfStop</td>
+                                        <td>@time</td>
+                                        <td><a class="btn btn-sm btn-info"  href="/UpdateOnline/Edit?LineId=@item.LineId">@Resources.Language.Edit</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+    </div>

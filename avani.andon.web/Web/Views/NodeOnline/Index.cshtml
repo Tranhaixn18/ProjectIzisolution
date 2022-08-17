@@ -1,0 +1,521 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Factory System</title>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="~/assets/img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/assets/img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/img/favicon-16x16.png">
+    <link rel="stylesheet" href="~/assets/bootstrap-4.0.0/dist/css/bootstrap.min.css" />
+    <script type="text/javascript" src="~/assets/bootstrap-4.0.0/Chart.bundle.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="~/assets/js/Chart.min.js"></script>
+    <script type="text/javascript" src="~/assets/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.2.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.2.js"></script>
+    <style>
+        body {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .title-head {
+            color: #000000;
+            line-height: 100%;
+            font-size: 50px;
+            font-weight: bold;
+            margin-top: 3%;
+            margin-left: 15%;
+            text-align: center;
+            font-family: "Arial", Times, serif;
+        }
+
+        .title-second-status {
+            text-align: center;
+            font-weight: bold;
+            font-family: Arial, Times, serif;
+        }
+
+        .logo-kang-2 {
+            margin-top: 19%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .logo-kang {
+            margin-top: 5%;
+            background-image: url(../../../img/115539logonenxanh.jpg);
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 55px;
+        }
+
+        .show-tit {
+            color: #000;
+            font-size: 50px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 30%;
+            font-family: Arial, Times, serif;
+        }
+
+        .title-node {
+            color: #000000;
+            line-height: 100%;
+            font-size: 30px;
+            font-weight: bold;
+            margin-left: 15%;
+            margin-bottom: 10%;
+            text-align: center;
+            font-family: Arial, Times, serif;
+            margin-top: -2%;
+        }
+
+        .title-one {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: Arial, Times, serif;
+            border-color: #000;
+        }
+
+        .title-second {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: Arial, Times, serif;
+        }
+
+        .title-second-one {
+            text-align: end;
+            font-size: 30px;
+            font-family: Arial, Times, serif;
+        }
+
+        .title-second-one-1 {
+            text-align: right;
+            font-size: 23px;
+            font-family: Arial, Times, serif;
+            margin-left: -10px;
+            margin-top: 23px;
+        }
+
+        .title-second-one-2 {
+            text-align: end;
+            font-size: 30px;
+            font-family: Arial, Times, serif;
+            margin-top: 20px;
+        }
+
+        .title-third {
+            font-size: 30px;
+            font-weight: bold;
+            font-family: Arial, Times, serif;
+            color: #fff;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-1 col-sm-12 col-xs-12" style="margin-top:-23px">
+                <div class="logo-kang-2">
+                    <img src="~/assets/img/Kangaroo.png" width="400" height="90" />
+                </div>
+            </div>
+            <div class="col-md-10 col-sm-12 col-xs-12" style="margin-top:-20px">
+                <div class="title-head">HỆ THỐNG QUẢN TRỊ MES</div>
+            </div>
+            <div class="col-md-1 col-sm-12 col-xs-12" style="margin-top: -25px; margin-left: -110px;">
+                <div id="timenow" class="show-tit"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-12 col-xs-12"></div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div id="titlenode" class="title-node">CHUYỀN: @ViewBag.NodeName</div>
+            </div>
+            <div class="col-md-3 col-sm-12 col-xs-12"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 col-sm-12 col-xs-12" style="padding-right:0">
+                <div class="card border-0" style="border-radius: 0;">
+                    <div class="card-body">
+                        <div class="row" style="margin-top:-15px;">
+                            <div class="col-md-12 col-sm-12 col-xs-12 border">
+                                <div class="title-one">Đang chạy</div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-6 col-sm border border-top-0 border-right-0
+                            border-bottom-0">
+                                <div class="title-second">Kế hoạch</div>
+                            </div>
+                            <div class="col-6 col-sm border border-top-0 border-bottom-0">
+                                <div class="title-second">Thực tế</div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div id="gogo" class="col-6 col-sm border border-right-0">
+                                <div id="planquantity" class="title-second-one"></div>
+                            </div>
+                            <div class="col-6 col-sm border">
+                                <div id="actualquantity" class="title-second-one"></div>
+                            </div>
+
+                            <div class="w-100"></div>
+                            <div class="container-fluid">
+                                <div class="card border-0" style="border-radius: 0;">
+                                    <div class="row border mt-2">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 border border-top-0 border-right-0 border-left-0">
+                                            <div class="title-one">Số lượng nhân công</div>
+                                        </div>
+                                        <div class="w-100"></div>
+                                        <div class="col-6 col-sm border border-top-0 border-right-0 border-bottom-0 border-left-0">
+                                            <div class="title-second">Kế hoạch</div>
+                                        </div>
+                                        <div class="col-6 col-sm border border-top-0 border-bottom-0 border-right-0">
+                                            <div class="title-second">Thực tế</div>
+                                        </div>
+                                        <div class="w-100"></div>
+                                        <div id="gogo" class="col-6 col-sm border border-right-0 border-bottom-0 border-left-0">
+                                            <div id="head_count_q" class="title-second-one"></div>
+                                        </div>
+                                        <div class="col-6 col-sm border border-bottom-0 border-right-0">
+                                            <div id="head_count_a" class="title-second-one"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="container-fluid" style="margin-top:-10px">
+                                <div class="row py-2 border mt-3">
+                                    <div class="col-md-12">
+                                        <div class="card border-0" style="border-radius: 0;">
+                                            <div class="card-body" style="width:650px !important; height:300px !important">
+                                                <canvas id="chDonut2" style="margin-left:-136px;margin-top:-20px"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-sm-12 col-xs-12" style="padding-left: 0">
+                <div class="card border-0" style="border-radius: 0">
+                    <div class="card-body">
+                        <div class="row" id="jsondata" style="margin-top:-2%;">
+                            <div class="col-md-6 col-sm-12 col-xs-12 border border-bottom-0 border-right-0"
+                                 style="background-color: rgb(175, 86, 23);">
+                                <div id="timejson" class="title-third">Thời gian[]</div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-xs-12 border border-bottom-0"
+                                 style="background-color: rgb(175, 86, 23);">
+                                <div id="quantityjson" class="title-third">Sản lượng</div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-md-4 col-sm-2 col-xs-2 border  border-right-0">
+                                <div class="title-second">Lệnh sản xuất</div>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2 border border-right-0">
+                                <div class="title-second">Kế hoạch</div>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2 border border-right-0">
+                                <div class="title-second">Mục tiêu</div>
+                            </div>
+                            <div class="col-md-2 col-sm-3 col-xs-3 border border-right-0">
+                                <div class="title-second">Thực tế</div>
+                            </div>
+                            <div class="col-md-2 col-sm-3 col-xs-3 border">
+                                <div class="title-second">Hình ảnh</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0" style="border-radius:0;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-right:0px;">
+                                        <div class="p-3 mb-5 bg-success"></div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 title-second-status" style="padding-left:0px; padding-top:5px">Hoàn thành</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-right:0px;">
+                                        <div class="p-3 mb-5 bg-primary"></div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 title-second-status" style="padding-left:0px; padding-top:5px">Kế hoạch</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-right:0px;">
+                                        <div class="p-3 mb-5 bg-warning"></div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 title-second-status" style="padding-left:0px; padding-top:5px">Đang chạy</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-right:0px;">
+                                        <div class="p-3 mb-5 bg-danger"></div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 title-second-status" style="padding-left:0px; padding-top:5px">Tạm dừng</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+    var y = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date();
+        var hours = now.getHours();
+        hours = hours < 10 ? "0" + hours : hours;
+        var minutes = now.getMinutes();
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        var seconds = now.getSeconds();
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        // Display the result in the element with id="demo"
+        document.getElementById("timenow").innerHTML = hours + ":" + minutes + ":" + seconds + "";
+    }, 1000);
+
+    //SOCKET
+    $(document).ready(function () {
+
+        function socketio() {
+            var uri = 'ws://localhost:5000/ws';
+            var socket = new WebSocket(uri);
+            console.log(45);
+            socket.onopen = function () {
+                console.log("OK");
+            }
+            socket.onclose = function () {
+                console.log("CLOSE");
+            }
+            socket.onmessage = function (e) {
+                //clientUpdate(e.data);
+                updateAttribute(e.data);
+                //var msg = e.data;
+                //console.log(msg);
+            }
+            socket.onerror = function (e) {
+                //console.log(e.data);
+            }
+        }
+        socketio();
+    });
+
+
+    function updateAttribute(rData) {
+
+
+        if (rData != undefined && rData != "") {
+            const jsonData = JSON.parse(rData);
+            console.log(jsonData[0].Code);
+            console.log(jsonData);
+            console.log($('#titlenode').text().substring(8,))
+            if (jsonData[0].Code == $('#titlenode').text().substring(8,)) {
+                $('#planquantity').html("");
+                $('#actualquantity').html("");
+                $('#timejson').html("");
+                $('#quantityjson').html("");
+                $('#head_count_q').html("");
+                $('#head_count_a').html("");
+                //if (jsonData[0].WorkPlan.PlanQuantity == null) {
+                //    $('#planquantity').append('0');
+                //    $('#quantityjson').append('Số lượng: 0');
+                //} else {
+                //    $('#planquantity').append(jsonData[0].WorkPlan.PlanQuantity);
+                //    $('#quantityjson').append('Số lượng: ' + jsonData[0].WorkPlan.PlanQuantity);
+                //}
+
+                if (jsonData[0].WorkPlan.PlanHeadCount == null) {
+                    $('#head_count_q').append(0);
+                } else {
+                    $('#head_count_q').append(jsonData[0].WorkPlan.PlanHeadCount);
+                }
+                if (jsonData[0].WorkPlan.PlanStart == null || jsonData[0].WorkPlan.PlanFinish == null) {
+                    const planStart = '0';
+                    const planEnd = '0';
+                    const textTime = 'Thời gian [ ' + planStart + ' - ' + planEnd + ' ]';
+                    $('#timejson').append(textTime);
+
+                } else {
+                    const planStart = jsonData[0].WorkPlan.PlanStart.substring(11, 16);
+                    const planEnd = jsonData[0].WorkPlan.PlanFinish.substring(11, 16);
+                    const textTime = 'Thời gian [ ' + planStart + ' - ' + planEnd + ' ]';
+                    $('#timejson').append(textTime);
+                }
+
+
+
+
+                var actualQ = 0;
+                for (let i = 0; i < jsonData[0].WorkPlan.WorkOrderPlans.length; i++) {
+                    if (jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity == null) {
+                        actualQ = actualQ + 0;
+                    } else {
+                        actualQ = actualQ + jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity;
+                    }
+
+
+                    var text1 = '<div class="col-6 col-sm border border-right-0 border-top-0" style="background-color:#ff0000"></div>';
+                    /*if (jsonData[0].WorkPlan.WorkOrderPlans[i].WorkOrderCode)*/
+                    var idWorkOrder = 'id="workorder' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '"';
+                    var idPlanQuantity = 'id="planquantity' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '"';
+                    var t = '#workorder' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode;
+                    console.log(t);
+
+                    if (jsonData[0].WorkPlan.WorkOrderPlans[i].Status == 0) {
+                        text1 = 'style="background-color:#007bff; color:#fff; height:85px"';
+                    } else if (jsonData[0].WorkPlan.WorkOrderPlans[i].Status == 1) {
+                        text1 = 'style="background-color:#ffc107; color:#fff; height:85px"';
+                    } else if (jsonData[0].WorkPlan.WorkOrderPlans[i].Status == 2) {
+                        text1 = 'style="background-color:#dc3545; color:#fff; height:85px"';
+                    } else {
+                        text1 = 'style="background-color:#28a745; color:#fff; height:85px"';
+                    }
+                    if ($(t).text() == jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionName) {
+                        var ta = '#target' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode;
+                        var a = '#actualquantity' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode;
+                        $(ta).html("");
+                        $(a).html("");
+                        if (jsonData[0].WorkPlan.WorkOrderPlans[i].PlanQuantity == null || jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity == null) {
+                            $(ta).append(0);
+                            $(a).append(0);
+                        } else {
+                            $(ta).append(jsonData[0].WorkPlan.WorkOrderPlans[i].Target);
+                            $(a).append(jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity);
+                        }
+                        continue;
+                    }
+                    if (jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity == null) {
+                        var text = '<div class="w-100"></div>' +
+                            '<div class="col-md-4 col-sm-2 col-xs-2 border border-right-0 border-top-0" ' + text1 + '>' + '<div class="title-second-one-1"' + idWorkOrder + '>' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionName + '</div></div>' +
+                            '<div class="col-md-2 col-sm-2 col-xs-2 border border-right-0 border-top-0 planquantity" ' + text1 + '><div class="title-second-one-2"' + idPlanQuantity + '>' + jsonData[0].WorkPlan.WorkOrderPlans[i].PlanQuantity + '</div></div>' +
+                            '<div class="col-md-2 col-sm-2 col-xs-2 border border-right-0 border-top-0" ' + text1 + '><div class="title-second-one-2" id="target' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '">' + jsonData[0].WorkPlan.WorkOrderPlans[i].Target + '</div></div>' +
+                            '<div class="col-md-2 col-sm-3 col-xs-3 border border-right-0 border-top-0 actualtotal" ' + text1 + '><div class="title-second-one-2" id="actualquantity' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '">' + 0 + '</div></div>' +
+                            '<div class="col-md-2 col-sm-3 col-xs-3 border border-top-0" ' + text1 + '></div>' +
+                            '<div hidden class="col-md-2 headcount">' + 0 + '</div>';
+                        $('#jsondata').append(text);
+                    }
+                    else {
+                        var text = '<div class="w-100"></div>' +
+                            '<div class="col-md-4 col-sm-2 col-xs-2 border border-right-0 border-top-0" ' + text1 + '>' + '<div class="title-second-one-1"' + idWorkOrder + '>' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionName + '</div></div>' +
+                            '<div class="col-md-2 col-sm-2 col-xs-2 border border-right-0 border-top-0 planquantity" ' + text1 + '><div class="title-second-one-2"' + idPlanQuantity + '>' + jsonData[0].WorkPlan.WorkOrderPlans[i].PlanQuantity + '</div></div>' +
+                            '<div class="col-md-2 col-sm-2 col-xs-2 border border-right-0 border-top-0" ' + text1 + '><div class="title-second-one-2" id="target' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '">' + jsonData[0].WorkPlan.WorkOrderPlans[i].Target + '</div></div>' +
+                            '<div class="col-md-2 col-sm-3 col-xs-3 border border-right-0 border-top-0 actualtotal" ' + text1 + '><div class="title-second-one-2" id="actualquantity' + jsonData[0].WorkPlan.WorkOrderPlans[i].ProductionCode + '">' + jsonData[0].WorkPlan.WorkOrderPlans[i].ActualQuantity + '</div></div>' +
+                            '<div class="col-md-2 col-sm-3 col-xs-3 border border-top-0" ' + text1 + '></div>' +
+                            '<div hidden class="col-md-2 headcount">' + jsonData[0].WorkPlan.WorkOrderPlans[i].HeadCount + '</div>';
+                        $('#jsondata').append(text);
+                    }
+
+                }
+
+                var n = document.getElementsByClassName("col-md-2 col-sm-3 col-xs-3 border border-right-0 border-top-0 actualtotal");
+                let sum = 0;
+                for (let j = 0; j < n.length; j++) {
+                    sum = sum + parseInt(n[j].textContent);
+                }
+                var m = document.getElementsByClassName("col-md-2 col-sm-2 col-xs-2 border border-right-0 border-top-0 planquantity");
+                let sumPlan = 0;
+                for (let t = 0; t < m.length; t++) {
+                    sumPlan = sumPlan + parseInt(m[t].textContent);
+                }
+                $('#planquantity').append(sumPlan);
+                $('#quantityjson').append('Sản lượng: ' + sumPlan);
+                $('#actualquantity').append(sum);
+                var headCount = document.getElementsByClassName("col-md-2 headcount");
+                let sumHeadCount = 0;
+                for (let k = 0; k < headCount.length; k++) {
+                    sumHeadCount = sumHeadCount + parseInt(headCount[k].textContent);
+                }
+                $('#head_count_a').append(sumHeadCount);
+
+
+                var data = [{
+                    //data: [c.PlanQuantity, (c.PlanQuantity - parseInt($('#actualquantity').text()))],
+                    data: [parseInt($('#actualquantity').text()), parseInt($('#planquantity').text()) - parseInt($('#actualquantity').text())],
+                    backgroundColor: [
+                        "#0b66ff",
+                        "#ff7400"
+                    ]
+                }];
+                var options = {
+                    animation: {
+                        duration: 0
+                    },
+                    cutoutPercentage: 65,
+                    tooltips: {
+                        enabled: false
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                let datasets = ctx.chart.data.datasets;
+                                if (datasets.indexOf(ctx.dataset) === datasets.length - 1) {
+                                    let sum = datasets[0].data.reduce((a, b) => (a + b), 0);
+                                    let percentage = Math.round((value / sum) * 100) + '%';
+                                    return percentage;
+                                } else {
+                                    return percentage;
+                                }
+                            },
+                            color: '#fff',
+                        }
+                    }
+                };
+                var result = document.getElementById("chDonut2").getContext('2d');
+                var myChart = new Chart(result, {
+                    type: 'pie',
+                    data: {
+                        datasets: data,
+                        labels: ["Thực tế", "Kế hoạch"],
+                    },
+                    options: options,
+                });
+            }
+
+        }
+    }
+</script>

@@ -1,0 +1,440 @@
+﻿
+@model List<avSVAW.Models.ListLossForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+      var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+        var sessionLang = Session[Common.GlobalConstants.LANG_SESSION];
+     string lang = "";
+    if (sessionLang != null)
+    {
+        lang = Convert.ToString(sessionLang);
+    }
+}
+@section header{
+    @ViewBag.Title
+}
+
+<style>
+    .working-percent {
+        float:left;
+        background-color: forestgreen;
+        color:white;
+        text-align:center;
+    }
+    .un-working-percent {
+        float:right;
+        background-color: gray;
+    }
+
+</style>
+<script src="~/assets/js/Chart.min.js"></script>
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("GetCallLog", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.FromDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.ToDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divToDate" class="input-group input-append">
+                            <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @if (Common.UserFunction.USER_LINE_LEADER(session.Role))
+                    {
+                        <input type="hidden" name="LineId" id="LineId" value="@session.LineId" />
+                    }
+                    else
+                    {
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                    }
+
+
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;
+                            &nbsp;
+                            <button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;@Resources.Language.ExportExcel</button>
+                            &nbsp;
+                            &nbsp;
+                            @*<button type="button" id="showBar" class="btn btn-primary"><i class="fa fa-pie-chart"></i>&nbsp;&nbsp;@Resources.Language.ShowBar</button>*@
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    @{
+                        int StopCount = 0, iCount = 1;
+                        double TotalStopTime = 0;
+                    }
+                    <table id="CallLog" class="table table-bordered table-striped inventory">
+                        <thead>
+                            <tr>
+                                <th class="no-sort" style="text-align:center">#</th>
+                                <th class="no-sort">@Resources.Language.Line</th>
+                                <th class="no-sort">@Resources.Language.WS</th>
+                                <th class="no-sort">@Resources.Language.Problem</th>
+                                <th class="no-sort"  style="text-align:center">@Resources.Language.Reason</th>
+                                <th  class="no-sort" style="text-align:center">@Resources.Language.StartTime</th>
+                                <th class="no-sort" style="text-align:center">@Resources.Language.FinishTime</th>
+                                <th style="text-align:center">@Resources.Language.Duration</th>
+                                @*<th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.NumberOfStop</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.StopWorkingPlan (@Resources.Language.Minute)</th>*@
+                                <th class="no-sort"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr id="row_@item.Id" data-id="@item.Id" class="row-click">
+                                <td style="text-align:center">
+                                    @iCount
+                                </td>
+
+                                <td>
+
+                                    @item.LineName
+
+                                </td>
+
+                                <td>
+                                    @item.NodeName
+                                </td>
+
+                                <td style="text-align:center">
+
+                                    @if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                                    {
+                                        @item.ProblemEN
+                                    }
+                                    else
+                                    {
+                                        @item.ProblemVN
+                                    }
+                                </td>
+
+                                <td style="text-align:left" class="view-reason">
+                                    @item.Reason
+                                </td>
+                                <td style="text-align:center">
+                                    @item.TT3
+                                </td>
+                                <td style="text-align:center">
+                                    @item.TT1
+                                </td>
+                                <td style="text-align:center">
+                                    @item.TotalDuration
+                                </td>
+                                @*<td style="text-align:right">
+            @item.strPlanStopDuration
+        </td>*@
+                                <td>
+            <a data-id="@item.Id" href="#" class="btn btn-info btn-xs update-reason"><i class="fa fa-pencil"></i> Update Reason </a>
+        </td>
+                                @{
+                                    iCount++;
+                                }
+
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <canvas id="BarChart" height="30%" width="80%"></canvas>
+                    </div>
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editReason" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">@Resources.Language.Reason</h3>
+                <button type="button" class="close" style="margin-top:-32px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach (var gReason in ViewBag.Reasons)
+                {
+                    if (gReason.GroupId == 0)
+                    {
+
+                        <div class="form-group">
+                            <div class="col-md-12"> <b>@gReason.GroupName</b></div>
+                            <div class="clearfix"></div>
+                            @foreach (var gg in ViewBag.Reasons)
+                            {
+                                if (gg.GroupId == gReason.Id)
+                                {
+                                    <div class="col-md-12">
+                                        <input id="group-id_@gg.Id" style="margin-left:10px;" type="radio" name="groupreason" value="@gg.Name" />
+                                        <label style="float: none!important; font-weight: normal;" for="group-id_@gg.Id"> @gg.Name </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    }
+                }
+
+                <div class="form-group">
+                    <div class="col-md-12"> <b>@Resources.Language.Other</b></div>
+                    <div class="clearfix"></div>
+                    <div class="col-md-2">
+                        <input style="margin-left:10px;" id="group-id_0" type="radio" name="groupreason" value="0" />  <label style="float: none!important; font-weight: normal;" for="group-id_0"> @Resources.Language.Other </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input type="text" style="display:none;" name="groupother" value="" id="Reason" />
+                    </div>
+                </div>
+
+                <div class="col-md-8 form-group">
+                    <input type="hidden" name="modelId" id="modelId" value="0" />
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                @if (Common.UserFunction.USER_LINE_LEADER(session.Role) || Common.UserFunction.USER_ADMIN(session.Role))
+                {
+                    <button type="button" id="save-reason" class="btn btn-primary">@Resources.Language.Save</button>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Resources.Language.Back</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+@foreach(var edf in ViewBag.lstEventD)
+{
+    <input type="hidden" id="ED_@edf.Id" value="@edf.Name_EN" data-name="@edf.Name_EN" data-nameen="@edf.Name_EN" data-namevi="@edf.Name_VN"  data-color="@edf.Color" />
+}
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+<script type="text/javascript">
+        function ExportExcel() {
+            var url = '@Url.Action("ExportListLossToExcel", "Report")';
+            var _fromDate = $('#StartDate').val();
+            var _toDate = $('#EndDate').val();
+            var _nodetype = $("#LineId").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?StartDate=' + _fromDate + '&EndDate=' + _toDate + '&LineId=' + _nodetype;
+            window.location.href = ExcelURL;
+    };
+
+        $(function () {
+            $('.inventory').DataTable({
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': true,
+                columnDefs: [{
+                    orderable: false,
+                    targets: "no-sort"
+                }],
+                'info': false,
+                'autoWidth': false
+            })
+        })
+    $(document).ready(function () {
+
+             $("#showBar").click(function () {
+                $("#BarChart").show();
+                $("#CallLog").hide();
+                 var ctx = document.getElementById('BarChart');
+                var label = [];
+                var datas = [];
+                var colors = [];
+                var lang =  $("#langId").val().toLowerCase();
+                @foreach(var c in ViewBag.Chart)
+                {
+                     @Html.Raw("var name=$('#ED_"+c.EventDefId +"').attr('data-name'+lang);");
+                     @Html.Raw("var color=$('#ED_"+c.EventDefId +"').attr('data-color');");
+                     @Html.Raw("datas.push('"+c.LineId +"');");
+                     @Html.Raw("colors.push(color);");
+                     @Html.Raw("label.push(name);");
+                }
+
+                var data = {
+                    labels: label,
+                        datasets: [{
+                                 label: 'Report',
+                                    data: datas,
+                            borderWidth: 1,
+                                    backgroundColor: colors
+                                }]
+                }
+                var option ={
+                            tooltips: { enabled: true },
+                            showTooltips: true,
+                            legend: {
+                                display: true
+                            },
+                            responsive: true,
+                        };
+                 var myChart1 = new Chart(ctx, {
+                    type: 'pie',
+                    data: data,
+                    options: option
+                });
+            });
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+        $(".update-reason").click(function () {
+            var id = $(this).attr('data-id');
+            if (Number(id) > 0) {
+                var textReason = $(this).closest('tr').find('.view-reason').html();
+                textReason = textReason.trim();
+                $('input[name="groupreason"]').each(function () {
+                    if ($(this).val() == textReason) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+
+                $("#editReason").modal('show');
+                $("#modelId").val(id);
+                var t1 = $("#row_" + id + " .view-t1").html();
+                if (t1 != "") {
+                    $("#save-reason").show();
+                } else {
+                    $("#save-reason").hide();
+                }
+                $("#Reason").val("");
+            }
+        });
+       /* $(".row-click").click(function () {
+            var id = $(this).attr('data-id');
+            $('input[name="groupreason"]').prop('checked', false);
+            $("#Reason").attr('style', 'display:none');
+            if (Number(id) > 0) {
+                var textReason = $(this).closest('tr').find('.view-reason').html();
+                $('input[name="groupreason"]').each(function () {
+                    if ($(this).val() == textReason) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+
+                $("#editReason").modal('show');
+                $("#modelId").val(id);
+                var t1 = $("#row_" + id + " .view-t1").html();
+                if (t1 != "") {
+                    $("#save-reason").show();
+                } else {
+                    $("#save-reason").hide();
+                }
+                $("#Reason").val("");
+
+            }
+        }); */
+        $('input[name="groupreason"]').change(function () {
+            if ($(this).val() == "0") {
+                $("#Reason").show();
+                $("#Reason").val("");
+            } else {
+                $("#Reason").hide();
+                $("#Reason").val($(this).val());
+            }
+
+        });
+        $("#save-reason").click(function () {
+            var id = $("#modelId").val();
+            var reason = $("#Reason").val();
+            if (id > 0) {
+                if (reason != "") {
+                    $.ajax({
+                        url: "/ListLoss/UpdateReason",
+                        data: {
+                            Id: id,
+                            Reason: reason
+                        },
+                        type: "POST",
+                        beforeSend: function () {
+                            $('#loading').show();
+                        },
+                        success: function (result) {
+                            if (result == 'OK') {
+                                $("#editReason").modal('hide');
+                                $("#row_" + id + " .view-reason").html(reason);
+                            } else {
+                                console.log("error", result);
+                                alert("Có lỗi");
+                            }
+
+                        },
+                        error: function (errormessage) {
+                            console.log("error", errormessage);
+                            alert("Có lỗi");
+                        }
+                    }).done(function () {
+                        $('#loading').hide();
+                    });
+                } else {
+                }
+            }
+        });
+        });
+</script>
+
+
+}
+

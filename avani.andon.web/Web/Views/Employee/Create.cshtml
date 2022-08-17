@@ -1,0 +1,225 @@
+﻿@model avSVAW.Models.EmployeeForm
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 id="dstitle" style="margin-top: -10px;">@Resources.Language.Create @Resources.Language.Employee</h3>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="box box-info">
+            <div class="box-header" id="failure"></div>
+            <div class="box-body no-padding">
+                @using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, "Tên nhân viên", htmlAttributes: new { @class = "control-label required" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Code, "Mã nhân viên", htmlAttributes: new { @class = "control-label required" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Email, "Hộp thư", htmlAttributes: new { @class = "control-label" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Phone, "Số điện thoại", htmlAttributes: new { @class = "control-label required" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, "Mô tả", htmlAttributes: new { @class = "control-label" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.CardId, "Mã thẻ", htmlAttributes: new { @class = "control-label required" })
+                        </div>
+
+                        <div class="col-sm-3">
+
+                            @Html.EditorFor(model => model.CardId, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.CardId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.DeptId, "Bộ phận", htmlAttributes: new { @class = "control-label required" })
+                        </div>
+
+                        <div class="col-sm-3">
+                            @Html.DropDownListFor(x => x.DeptId, Model.Depts, new { @class = "form-control" })
+                        </div>
+                        @*<div class="col-sm-2">
+                            @Html.LabelFor(model => model.Active, "Tình trạng", htmlAttributes: new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.CheckBoxFor(model => model.Active, htmlAttributes: new { @checked = Model.Active })
+                        </div>*@
+                    </div>
+
+                    <div class="ln_solid">
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-6">
+                            <a href="/Employee/Index">
+                                <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                            </a>
+                            <button type="submit" class="btn btn-success">@Resources.Language.Save</button>&nbsp;
+
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $('#frmValidate').validate({ // initialize the plugin
+            rules: {
+
+                DeptId: {
+                    required: function (element) {
+                        return $('#DeptId').val() == ""
+                    }
+                }
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            @*var jsonRabbit = JSON.parse(@Html.Raw(@ViewBag.MessageRabbit));
+            var d = '<span>' + jsonRabbit.cardId + '</span>';
+            console.log(jsonRabbit);
+            console.log(jsonRabbit.cartId);
+            console.log(d);
+            $('#failure').append(d);*@
+
+            if (@ViewBag.Failure == 0) {
+                var text = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert" >MÃ THẺ ĐÃ TỒN TẠI VÀ ĐANG ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text);
+            }
+            else if (@ViewBag.Failure == -1) {
+                var text2 = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert">MÃ NHÂN VIÊN ĐÃ TỒN TẠI !</div>'
+                $('#failure').append(text2);
+            } else if (@ViewBag.Failure == -2) {
+                var text3 = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert">SỐ ĐIỆN THOẠI ĐÃ ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text3);
+            }
+        });
+    </script>
+}
+<script type="text/javascript">
+
+
+    @*$("#ecard_id").focus(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET", "http://localhost:6291/api/ApiRFID/GetRFID", true);
+        xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhttp.send();
+        xhttp.onload = function () {
+            var jsonResponse = JSON.parse(xhttp.responseText);
+            console.log("focus"+jsonResponse);
+            $('#ecard_id').val(xhttp.responseText);
+
+        };
+    });*@
+    //$("#ecard_id").mousemove(function () {
+    //    var xhttp = new XMLHttpRequest();
+
+    //    xhttp.open("GET", "http://localhost:6291/api/ApiRFID/GetRFID", true);
+    //    xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    //    xhttp.send();
+    //    xhttp.onload = function () {
+    //        var jsonResponse = JSON.parse(xhttp.responseText);
+    //        console.log("mouseenter" + jsonResponse);
+    //        $('#ecard_id').val(jsonResponse);
+
+    //    };
+    //});
+
+    // Connect to WebSocket
+    $(document).ready(function () {
+        function socketio() {
+            var uri = 'ws://localhost:5000/ws';
+            var socket = new WebSocket(uri);
+            socket.onopen = function () {
+                console.log("OK");
+            }
+            socket.onclose = function () {
+                console.log("CLOSE");
+            }
+            socket.onmessage = function (e) {
+                //clientUpdate(e.data);
+                var msg = e.data;
+                console.log(msg);
+                updateAttribute(e.data);
+                
+            }
+            socket.onerror = function (e) {
+                //console.log(e.data);
+            }
+        }
+        socketio();
+        //$('#CardId').val($('#CardId').val()+"");
+        function updateAttribute(rdata) {
+            if (rdata != undefined && rdata != "") {
+                const jsonData = JSON.parse(rdata);
+                console.log(jsonData.cardid);
+                $('#CardId').val("");
+                $('#CardId').val($('#CardId').val() + jsonData.cardid);
+
+            }
+        }
+    });
+    
+
+
+</script>

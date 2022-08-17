@@ -1,0 +1,129 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.Operation;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    string DataValue = "", DataLabel = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/custom.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/Scripts/adminlte/components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Reports/charts/loader.js"></script>
+    <style>
+        body{background:#FFF;color:#333;}
+        div.box{background:#FFF;height:auto; border:0px;margin-top:20px;}
+        .center{text-align:center;}
+        .form-group{width:60%;margin:auto;}
+        .control-label,.control-value{font-size:20px;}
+        .box-body{text-align:center;}
+         .header{border-bottom: 2px solid #000;width:100%;text-align:center;}
+        .header .logo{position:absolute;left:30px; top:10px;}
+        .header .logo img{height:90px;}
+        .header .company-info{text-align:center;}
+        .header .company-info p{font-size:30px;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img src="~/assets/img/favicon-small.png" /></div>
+        <div class="company-info">
+            <h1>SUMIDEN VIETNAM AUTOMOTIVE WIRE</h1>
+            <p> Nhà máy : F2 Hưng Yên </p>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label class="control-label">Từ ngày : @ViewBag.FromDate</label>
+                    <input type="hidden" name="ReportDate" id="ReportDate" value="@ViewBag.FromDate" />
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Ca làm việc : @ViewBag.WorkShift</label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Loại máy : @ViewBag.NodeType</label>
+                </div>
+                <br/><br />
+                <h3 class="center">@ViewBag.Title </h3>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="col-sm-12">
+        <div id="divReportOperationContainer">
+            <div id="chartContainer" style="height: 100%; width: 100%; min-height:3600px"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            google.charts.load("current", { packages: ["timeline"] });
+             google.charts.setOnLoadCallback(GoogleDrawTimeline);
+        });
+
+    function GoogleDrawTimeline() {
+
+       // alert(DataList.length);
+
+        var container = document.getElementById('chartContainer');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'NodeName' });
+        dataTable.addColumn({ type: 'number', id: 'NodeId' });
+        dataTable.addColumn({ type: 'string', id: 'EventDefName' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        //return;
+        var arrColorDef = ["#28e333", "#f31818", "#0ED847", "#0ED847"];
+        @if (ViewBag.model.Count > 0 && ViewBag.model[0].EventDefId == 2)
+        {
+            @Html.Raw("arrColorDef = ['#f31818', '#28e333', '#0ED847', '#0ED847'];");
+        }
+         @foreach (var item in ViewBag.Model)
+         {
+               @Html.Raw("dataTable.addRow(['"+item.NodeName + "'," + item.NodeId +",'" +
+              item.EventDefName +"',new Date('" +item.StartTime +"'),new Date('" + item.FinishTime+"')]);");
+         }
+        var d = $("#ReportDate").val();
+
+        var _day = parseInt(d.substr(0, 2)), _month = parseInt(d.substr(3, 2)); _year = parseInt(d.substr(6, 4));
+
+        var options = {
+            enableInteractivity: true,
+            colors: arrColorDef,
+            hAxis: {
+                format: 'HH:mm',
+                gridlines: { count: 24 },
+            },
+            timeline: {
+                showBarLabels: false,
+                enableInteractivity: false,
+                groupByRowLabel: true
+            }
+        };
+        var view = new google.visualization.DataView(dataTable);
+        view.setColumns([0, 2, 3, 4]);
+        chart.draw(view, options);
+    }
+    </script>
+</body>
+</html>
+

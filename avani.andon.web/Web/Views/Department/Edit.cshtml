@@ -1,0 +1,158 @@
+﻿@model avSVAW.Models.DepartmentForm
+@{
+
+    ViewBag.Title = Resources.Language.Department;
+    ViewBag.SubTitle = Resources.Language.Edit + " " + ViewBag.Title;
+}
+@section header{
+    <p style="margin-left: 30px;">@ViewBag.SubTitle</p>
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 25px;
+            width: 25px;
+            /*background-color: #eee;*/
+        }
+    </style>
+
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            if (@ViewBag.Failure == 0) {
+                var text = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert" >MÃ THẺ ĐÃ TỒN TẠI VÀ ĐANG ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text);
+            } else if (@ViewBag.Failure == -1) {
+                var text1 = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert" >TÊN PHÒNG ĐÃ TỒN TẠI VÀ ĐANG ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text1);
+            } else if (@ViewBag.Failure== -2) {
+                var text2 = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert" >MÔ TẢ ĐÃ TỒN TẠI VÀ ĐANG ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text2);
+            }
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    @*<script>
+            $(document).ready(function () {
+
+                $.validator.addMethod("unique", function (value, element) {
+                    var isExist = 0;
+                    var _Id = Number($("#_Id").val());
+                    if (_Id == 0) {
+                        return false;
+                    }
+                    if (value != '') {
+                        $.ajax({
+                            url: "/WorkOrder/CheckExistCode?Id=" + _Id + "&Code=" + value,
+                            type: 'get',
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data) {
+                                    isExist = data;
+                                } else { isExist = 0; }
+                            }
+                        });
+                    }
+                    return isExist > 0 ? false : true;
+                }, "Dữ liệu bị trùng lặp.");
+                $('#frmValidate').validate({ // initialize the plugin
+                    rules: {
+                        Code: {
+                            required: true,
+                            unique: true
+                        },
+                        Name: {
+                            required: true
+                        },
+                        Speed: {
+                            required: true,
+                            number: true
+                        }, Unit: {
+                            required: true,
+                            number: true
+                        },
+                    },
+                    submitHandler: function (form) {
+                        form.submit();
+                    }
+                });
+
+                    $('.datepicker').datetimepicker({
+                        pickTime: false
+                    });
+
+            })
+
+        </script>*@
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header" id="failure"></div>
+            @using (Html.BeginForm("Edit", "Department", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                <div class="box-body">
+
+                    <input type="hidden" name="Id" id="_Id" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Code, Resources.Language.Code, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, Resources.Language.Name, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-6 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- /.box-body -->
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-6">
+                            <a href="@Url.Action("Index")" class="btn btn-default" style=" margin-right: 0px;">
+                                @Resources.Language.Back
+                            </a>
+                            <button type="submit" class="btn btn-success">@Resources.Language.Save</button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+

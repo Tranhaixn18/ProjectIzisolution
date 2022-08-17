@@ -1,0 +1,176 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " kế hoạch & thực tế.";
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    string DataValue = "", DataLabel = "";
+    int i = 0;
+    double maxDuration = 0;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/custom.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/Scripts/adminlte/components/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/js/Chart.min.js"></script>
+    <style>
+        body{background:#FFF;color:#333;}
+        div.box{background:#FFF;height:auto; border:0px;margin-top:20px;}
+        .center{text-align:center;}
+        .form-group{width:60%;margin:auto;}
+        .control-label,.control-value{font-size:20px;}
+        .box-body{text-align:center;}
+        .header{border-bottom: 2px solid #000;width:100%;text-align:center;}
+        .header .logo{position:absolute;left:30px; top:10px;}
+        .header .logo img{height:90px;}
+        .header .company-info{text-align:center;}
+        .header .company-info p{font-size:30px;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img src="~/assets/img/favicon-small.png" /></div>
+        <div class="company-info">
+            <h1>SUMIDEN VIETNAM AUTOMOTIVE WIRE</h1>
+            <p> Nhà máy : F2 Hưng Yên </p>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Từ ngày : @ViewBag.FromDate</label>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Đến ngày : @ViewBag.ToDate</label>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Ca làm việc : @ViewBag.WorkShift</label>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Loại máy : @ViewBag.NodeType</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12" id="ChartContainer">
+        <canvas id="LineChart" height="30%" width="80%"></canvas>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+             var DataActual = [];
+             var DataPlan = [];
+             var DataLabel = [];
+             @foreach (var item in ViewBag.Model)
+             {
+                 maxDuration = item.PlanDuration > item.ActualDuration ? item.PlanDuration : item.ActualDuration;
+                 @Html.Raw("DataActual.push('"+item.ActualDuration + "');");
+                 @Html.Raw("DataPlan.push('"+item.PlanDuration + "');");
+                 if (i == 0)
+                 {
+                    @Html.Raw("DataLabel.push('');");
+                 }
+                 else
+                 {
+                     @Html.Raw("DataLabel.push('"+item.Day + "/" + item.Month + "');");
+                 }
+                 i++;
+             }
+
+             DrawChartInc(DataActual, DataPlan, DataLabel, @maxDuration);
+        });
+        function DrawChartInc(DataActual,DataPlan, DataLabel,maxDuration) {
+            $('#LineChart').remove();
+            $('#ChartContainer').html('<canvas id="LineChart" height="30%" width="80%"></canvas>');
+            //alert(DataValue);
+            var ctx = document.getElementById('LineChart');
+
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: DataLabel,
+                    datasets: [
+                        {
+                            label: "Thực tế",
+                            fill: false,
+                            borderColor: "blue",
+                            lineTension: 0.1,
+                            data: DataActual
+                        },
+                        {
+                            label: "Kế hoạch",
+                            fill: false,
+                            borderColor: "red",
+                            lineTension: 0.1,
+                            data: DataPlan
+                        },
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: true,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Biểu đồ kế hoạch & thực tế',
+                        fontSize: 24
+
+                    },
+                    tooltips: {
+                        callbacks: {
+                            //title: function(tooltipItem, data) {
+                            //   var startDate = $("#FromDate").val();
+                            //    var d = startDate.split("/");
+                            //    var yLabel = tooltipItem[0].xLabel;
+                            //    var dateNew = new Date(Number(d[0]), Number(d[1]), Number(d[2]) + Number(yLabel));
+                            //    var month = dateNew.getMonth() < 10 ? "0" + dateNew.getMonth() : dateNew.getMonth();
+                            //    var date = dateNew.getDate() < 10 ? "0" + dateNew.getDate() : dateNew.getDate();
+                            //    return "Ngày :" + dateNew.getFullYear() + "/" + month + "/" +date;
+                            //},
+                            //label: function (tooltipItem, data) {
+                            //    var datasetIndex = tooltipItem.datasetIndex;
+                            //     var datasetLabel = data.datasets[datasetIndex].label;
+                            //    var yLabel = tooltipItem.yLabel;
+                            //    return  datasetLabel + " :" + yLabel + ' h';
+                            //}
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                fontSize: 12,
+                            },
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                stepSize: 24,
+                                fontSize: 12,
+                                beginAtZero: true,
+                                max: maxDuration + 24,
+                            },
+                        }]
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

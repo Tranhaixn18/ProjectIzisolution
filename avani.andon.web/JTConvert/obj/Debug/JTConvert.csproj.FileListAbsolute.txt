@@ -1,0 +1,6 @@
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\bin\Debug\JTConvert.dll
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\bin\Debug\JTConvert.pdb
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\obj\Debug\JTConvert.csproj.AssemblyReference.cache
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\obj\Debug\JTConvert.csproj.CoreCompileInputs.cache
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\obj\Debug\JTConvert.dll
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\JTConvert\obj\Debug\JTConvert.pdb

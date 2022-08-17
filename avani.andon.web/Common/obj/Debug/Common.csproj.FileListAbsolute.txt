@@ -1,0 +1,5 @@
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\Common\bin\Debug\Common.dll
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\Common\bin\Debug\Common.pdb
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\Common\obj\Debug\Common.dll
+D:\Work\MES\KGR\source\mes-kang-front-end\avani.andon.web\Common\obj\Debug\Common.pdb

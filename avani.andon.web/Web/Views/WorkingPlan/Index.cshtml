@@ -1,0 +1,202 @@
+﻿@model List<avSVAW.Models.WorkPlanForm>
+@*@model List<Model.Models.WorkPlanIndex>*@
+@{
+    //ViewBag.Title = Resources.Language.WorkingPlan;
+    //ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<h3 style="margin-top: -10px;">Kế hoạch sản xuất</h3>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("Index", "WorkingPlan", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.Year</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <select id="Year" name="Year" class="form-control col-md-7 col-xs-12">
+                                @{
+                                    var strSelect = "";
+
+                                    for (int i = 0; i < ViewBag.Years.Count; i++)
+                                    {
+                                        if (ViewBag.Months[i].Value == ViewBag.Year.ToString())
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+
+                                        <option value="@ViewBag.Years[i].Value" @strSelect>@ViewBag.Years[i].Text</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.Month</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <select id="Month" name="Month" class="form-control col-md-7 col-xs-12">
+                                @{
+                                    for (int i = 1; i < ViewBag.Months.Count; i++)
+                                    {
+                                        if (ViewBag.Months[i].Value == ViewBag.Month.ToString())
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+                                        <option value="@ViewBag.Months[i].Value" @strSelect>@ViewBag.Months[i].Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+
+                        <div class="col-sm-1">
+                            <label class="control-label">Trạng thái</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select id="Status" name="Status" class="form-control col-md-7 col-xs-12">
+                                @{
+                                    for (int i = 0; i < 7; i++)
+                                    {
+                                        if (ViewBag.Status[i].Value == ViewBag.Statuss.ToString())
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+                                        <option value="@ViewBag.Status[i].Value" @strSelect>@ViewBag.Status[i].Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Chuyền</th>
+                            <th>@Resources.Language.PlanStart</th>
+                            <th>@Resources.Language.PlanFinish</th>
+                            <th>Sản lượng kế hoạch</th>
+                            <th>Số lệnh sản xuất</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 12%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                var status = "";
+                                var strStatus = "";
+                                if (ev.Status == 0)
+                                {
+                                    status = "Kế hoạch";
+                                    strStatus = "label-primary";
+                                }
+                                else if (ev.Status == 1) { status = "Đang chạy"; strStatus = "label-warning"; }
+                                else if (ev.Status == 2) { status = "Tạm dừng"; strStatus = "label-danger"; }
+                                else if (ev.Status == 3) { status = "Hoàn thành"; strStatus = "label-success"; }
+                                else if (ev.Status == 4) { status = "Quá hạn"; strStatus = "label-secondary"; }
+                                else if (ev.Status == 5) { status = "Hủy bỏ"; strStatus = "label-dark"; }
+
+                                <tr>
+                                    <td>@iCount</td>
+                                    <td>@ev.LineNames</td>
+                                    <td>
+                                        @if (@ev.PlanStart != null)
+                                        {
+                                            <span>@Convert.ToDateTime(ev.PlanStart).ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@ev.PlanFinish != null)
+                                        {
+                                            <span>@Convert.ToDateTime(ev.PlanFinish).ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                        }
+                                    </td>
+                                    <td>@ev.PlanQuantity</td>
+                                    <td>@ev.WorkOrderQuantity</td>
+                                    <td><span class="label @strStatus">@status</span></td>
+                                    <td>
+                                        <a href="/WorkingPlan/WorkingPlanDetail?Id=@ev.Id" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-search"></i>&nbsp; @Resources.Language.View &nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+                    //$(document).ready(function () {
+
+                    //    $('#EventDeflist').DataTable({
+                    //        'paging': false,
+                    //        'lengthChange': true,
+                    //        'searching': true,
+                    //        'ordering': true,
+                    //        'info': false,
+                    //        'autoWidth': false
+                    //    })
+
+                    //    $("#modalImport").click(function () {
+                    //        $("#importcsv").modal('show');
+                    //    });
+                    //});
+    </script>
+}
+

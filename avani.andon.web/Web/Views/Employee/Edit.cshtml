@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+
+    <style type="text/css">
+        .profile_img {
+            max-width: 160px;
+            max-height: 160px;
+            margin: 0 auto;
+        }
+
+        li.select2-selection__choice {
+            color: green !important;
+        }
+    </style>
+}
+@model avSVAW.Models.EmployeeForm
+<h3 style="margin-top: -10px;">@Resources.Language.Edit @Resources.Language.Employee</h3>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="box box-info">
+            <div class="box-header" id="failure"></div>
+            <div class="box-body no-padding">
+                @using (Html.BeginForm("Edit", "Employee", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Code, "Mã nhân viên", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, "Tên nhân viên", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @required = "required" })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Email, "Hộp thư", new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Phone, "Số điện thoại", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @required = "required" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.CardId, "Mã thẻ", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.CardId, new { @id = "ecard_id", @class = "form-control", @required = "required" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.DeptId, Resources.Language.Department, new { @class = "control-label", @required = "required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.DropDownListFor(model => model.DeptId, Model.Depts, new { @class = "form-control", @required = "required" })
+                        </div>
+
+                        @*<div class="col-sm-2">
+                            @Html.LabelFor(model => model.Active, "Tình trạng", new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.CheckBoxFor(model => model.Active, htmlAttributes: new { @checked = Model.Active })
+                        </div>*@
+                    </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-6">
+                            <a href="/Employee/Index">
+                                <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                            </a>
+                            <button type="submit" class="btn btn-success">@Resources.Language.Save</button>&nbsp;
+
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        //add css for attach file element
+        var input = $("input:file").css({
+            width: "100%",
+            border: "0.1px solid"
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $('#frmValidate').validate({ // initialize the plugin
+            rules: {
+                DeptId: {
+                    required: function (element) {
+                        return $('#DeptId').val() == ""
+                    }
+                }
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            if (@ViewBag.Failure == 0) {
+                var text = '<div style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert" >MÃ THẺ ĐÃ TỒN TẠI VÀ ĐANG ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text);
+            }
+            else if (@ViewBag.Failure == -1) {
+                var text2 = '<div class="alert" style="background-color:#fff;color:#f80000;border-color: #f80000;" class="alert">SỐ ĐIỆN THOẠI ĐÃ ĐƯỢC SỬ DỤNG !</div>'
+                $('#failure').append(text2);
+            }
+        });
+    </script>
+    <script type="text/javascript">
+
+
+    @*$("#ecard_id").focus(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET", "http://localhost:6291/api/ApiRFID/GetRFID", true);
+        xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhttp.send();
+        xhttp.onload = function () {
+            var jsonResponse = JSON.parse(xhttp.responseText);
+            console.log("focus"+jsonResponse);
+            $('#ecard_id').val(xhttp.responseText);
+
+        };
+    });*@
+    $("#ecard_id").mousemove(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET", "http://localhost:6291/api/ApiRFID/GetRFID", true);
+        xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhttp.send();
+        xhttp.onload = function () {
+            var jsonResponse = JSON.parse(xhttp.responseText);
+            console.log("mouseenter" + jsonResponse);
+            $('#ecard_id').val(jsonResponse);
+
+        };
+    });
+
+
+    </script>
+}
+

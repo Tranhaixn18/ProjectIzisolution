@@ -1,0 +1,103 @@
+﻿@model Model.DataModel.tblBreakTime
+@{
+    //ViewBag.Title = Resources.Language.BreakTime;
+    //ViewBag.SubTitle = Resources.Language.Create + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+<h3 style="margin-top: -10px;">@Resources.Language.Create @Resources.Language.BreakTime</h3>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Create", "BreakTime", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="box-body">
+
+                    <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, Resources.Language.BreakTime, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.StartHour, Resources.Language.Start, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.StartHour, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.StartMinute, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.FinishHour, Resources.Language.Finish, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.FinishHour, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.FinishMinute, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-6">
+                            <a href="@Url.Action("Index")" class="btn btn-default">
+                                @Resources.Language.Back
+                            </a>
+                            <button type="submit" class="btn btn-success">Ghi lại</button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script src="~/assets/js/jquery.validate.js"></script>
+
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                    Name: {
+                        required: true
+                    },
+                    StartHour: {
+                        required: true,
+                        number: true
+                    },
+                    FinishHour: {
+                        required: true,
+                        number: true
+                    },
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,140 @@
+﻿@model List<Model.DataModel.tblLineProduction>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report ;
+    DateTime _current = DateTime.Now;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Xuất Excel</button>
+                            &nbsp;
+                            &nbsp;
+                            <input type="hidden" name="LineId" id="LineId" value="@ViewBag.LineId"/>
+                            <input type="hidden" name="WorkingPlanId" id="WorkingPlanId" value="@ViewBag.WorkingPlanId"/>
+                        </div>
+                    </div>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    @{
+                        int StopCount = 0, iCount = 1;
+                        double TotalStopTime = 0;
+                    }
+                    <table id="EFF" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>LogsTime</th>
+                                <th>ProductName</th>
+                                <th>TakeTime</th>
+                                <th>HeadCount</th>
+                                <th>Plan</th>
+                                <th>Target</th>
+                                <th>Actual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                String Times = item.LogsTime == null ? "" : Convert.ToDateTime(item.LogsTime).ToString("HH:mm:ss");
+                            <tr>
+                                <td>
+                                    @iCount
+                                </td>
+
+                                <td>
+                                    @Times
+                                </td>
+
+                                <td>
+                                    @item.ProductName
+                                </td>
+
+                                <td>
+                                    @item.TakeTime
+                                </td>
+
+                                <td >
+                                    @item.HeadCount
+                                </td> 
+                                <td >
+                                    @item.Plan
+                                </td>
+                                <td >
+                                    @item.Target
+                                </td> 
+                                <td >
+                                    @item.Actual
+                                </td>
+                                @{
+                                    iCount++;
+                                }
+
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+        function ExportExcel() {
+            var url = '@Url.Action("LineProductToExcel", "Report")';
+            var LineId = $('#LineId').val();
+            var WorkingPlanId = $('#WorkingPlanId').val();
+            var ExcelURL = url + '?LineId=' + LineId + '&WorkingPlanId=' + WorkingPlanId ;
+            window.location.href = ExcelURL;
+    };
+
+        $(function () {
+            $('#inventory').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        })
+        $(document).ready(function () {
+
+        });
+    </script>
+
+
+}
+

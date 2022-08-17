@@ -1,0 +1,29 @@
+﻿<div class="col-sm-1">
+    <label class="control-label">Chuyền</label>
+</div>
+<div class="col-sm-2">
+    <select id="LineId" name="LineId" class="form-control col-md-7 col-xs-12" onchange="loadNode()">
+        @{
+            var strSelect = "";
+            if (ViewBag.LineId == null)
+            {
+                ViewBag.LineId = "0";
+            }
+            for (var iType = 0; iType < ViewBag.Lines.Count; iType++)
+            {
+                if (ViewBag.Lines[iType].Value == ViewBag.LineId)
+                {
+                    strSelect = " selected ";
+                }
+                else
+                {
+                    strSelect = "";
+                }
+                <option value="@ViewBag.Lines[iType].Value" @strSelect> @Html.Raw(HttpUtility.HtmlDecode(@ViewBag.Lines[iType].Text))</option>
+            }
+
+
+        }
+
+    </select>
+</div>

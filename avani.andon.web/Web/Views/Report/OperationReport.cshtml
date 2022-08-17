@@ -1,0 +1,311 @@
+﻿
+@model List<avSVAW.Models.OperationForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.Operation;
+       var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+          var sessionLang = Session[Common.GlobalConstants.LANG_SESSION];
+     string lang = "";
+    if (sessionLang != null)
+    {
+        lang = Convert.ToString(sessionLang);
+    }
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script type="text/javascript" src="~/Reports/charts/loader.js"></script>
+@*<script src="~/Report/jspdf/jspdf.min.js"></script>
+<script src="~/Report/jspdf/html2canvas.js"></script>*@
+@*<script src="~/Report/jspdf/xeponline.jqplugin.js"></script>*@
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: gray;
+    }
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("OperationReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.Day</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="ReportDate" name="ReportDate" data-format="yyyy/MM/dd" value="@ViewBag.ReportDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- load template -->
+                    @if (Common.UserFunction.USER_LINE_LEADER(session.Role))
+                    {
+                        <input type="hidden" name="LineId" id="LineId" value="@session.LineId" />
+                    }
+                    else
+                    {
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                    }
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <button type="button" onclick="CreateOperationTimeline()" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        &nbsp;
+                        @*<button type="button" id="btnExportPDF" onclick="ExportPDF();" class="btn btn-warning"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp;Xuất Biểu đồ</button>
+            &nbsp;*@
+                    <button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;@Resources.Language.ExportExcel</button>
+                        &nbsp;
+                    </div>
+                    <div class="col-sm-8" id="list-eventdef" style="background:#f3ebeb;padding:5px;">
+                        @foreach (var ed in ViewBag.EventDefs)
+                        {
+                            if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                            {
+                                <div class="eventdef" id="EventDef-@ed.Id" data-id="@ed.Color" style="height:30px; width:30px;margin-right:10px; float:left; background:@ed.Color"></div>
+                                <div style="height:30px; width:100px;line-height:30px; float:left;">@ed.Name_EN</div>
+                            }
+                            else
+                            {
+                                <div class="eventdef" id="EventDef-@ed.Id" data-id="@ed.Color" style="height:30px; width:30px;margin-right:10px; float:left; background:@ed.Color"></div>
+                                <div style="height:30px; width:100px;line-height:30px; float:left;">@ed.Name_VN</div>
+                       
+                            }
+
+                        }
+                    </div>
+               </div>
+
+                    }
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <!-- Report container -->
+                    <div id="divReportOperationContainer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            CreateOperationTimeline();
+        });
+
+        function ExportExcel() {
+            var url = '@Url.Action("OperationToExcel", "Report")';
+            var reportdate = $("#ReportDate").val();
+            var LineId = $("#LineId").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?ReportDate=' + reportdate + '&LineId=' + LineId;
+            window.location.href = ExcelURL;
+        };
+         function ExportPDF() {
+            var reportdate = $("#ReportDate").val();
+            var nodetype = $("#NodeType").val();
+            $.ajax({
+                url: "/Report/PrintOperationChart",
+                data: {
+                    ReportDate: reportdate,
+                    NodeType: nodetype
+                },
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //alert(result);
+                    window.open(result, '_blank');
+                    //console.log(result);
+                    //$.each(result, function (key, item) {
+                    //    $("#CustomerId").append("<option value='" + item.ID + "'>" + item.Name + "</option>");
+                    //});
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+                    alert("Có lỗi xảy ra khi tạo báo cáo");
+                    //alert(errormessage.responseText);
+                }
+
+            });
+        }
+
+        function CreateOperationTimeline() {
+
+            //Get condition
+            var reportdate = $("#ReportDate").val();
+            var LineId = $("#LineId").val();
+            //alert(reportdate);
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetOperationReport?ReportDate=' + reportdate + '&LineId='+LineId,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+                    DataList = data;
+                    var divOperationContainer = $('#divReportOperationContainer');
+                    //var divChartContainer = $('#divChartOperationContainer');
+                    divOperationContainer.empty();
+
+                    //Legend
+                    //divOperationContainer.append('<div id="legendContainer" class="LegendContainer"></div>');
+                    //var divlegendContainer = $('#legendContainer');
+                    //divlegendContainer.append(strLegend);
+
+
+                    //alert(DataList.length);
+                    divOperationContainer.append('<div id="chartContainer" style="height: 100%; width: 100%; min-height:3600px"></div>');
+                    google.charts.load("current", { packages: ["timeline"] });
+                    google.charts.setOnLoadCallback(GoogleDrawTimeline);
+
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });;
+            //$('#divLoadingReport').html('');
+        }
+
+    function GoogleDrawTimeline() {
+
+       // alert(DataList.length);
+        var container = document.getElementById('chartContainer');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'LineName' });
+        dataTable.addColumn({ type: 'string', id: 'EventDefName' });
+           dataTable.addColumn({ type: 'string',  id: 'style', role: 'style' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addColumn({ type: 'string', id: 'LineId' });
+        //return;
+       
+        for (var j = 0; j < DataList.length; j++) {
+            var item = DataList[j];
+            var color = $("#EventDef-" + item.EventDefId).attr('data-id');
+            //alert(item.StartTime + "~" + item.FinishTime);
+            //console.log(item.NodeName + '~' + item.EventDefName + '~' + new Date(item.StartTime) + '~' + new Date(item.FinishTime));
+            dataTable.addRow([item.LineName,  item.EventDefName,color, new Date(item.T3.replace(/-/g, "/")), new Date(item.T1.replace(/-/g, "/")),""+item.LineId+ ""]);
+            //arrColors.push(arrColorDef[item.EventDefId - 1]);
+
+            //alert(arrColorDef[item.EventDefId]);
+            //dataTable.addRow([item.NodeName, item.NodeId, item.EventDefName, item.StartTime, item.FinishTime]);
+        }
+
+        var d = $("#ReportDate").val();
+
+        var _day = parseInt(d.substr(0, 2)), _month = parseInt(d.substr(3, 2)); _year = parseInt(d.substr(6, 4));
+        //console.log(new Date(_year, _month, _day, 0, 0, 0));
+        //console.log(new Date(_year, _month, _day, 23, 59, 59));
+        var options = {
+            enableInteractivity: true,
+          //  colors: arrColorDef,
+            allowHtml: true,
+            hAxis: {
+                format: 'HH:mm',
+                gridlines: { count: 24 },
+                //minValue: new Date(_year, _month, _day, 0, 0, 0),
+                //maxValue: new Date(_year, _month, _day, 23, 59, 59)
+            },
+            timeline: {
+                showBarLabels: false,
+                enableInteractivity: false,
+                groupByRowLabel: true
+            }
+        };
+
+
+        var view = new google.visualization.DataView(dataTable);
+       view.hideColumns([5]);  // array of column indexes to hide
+
+
+        //google.visualization.events.addListener(chart, 'ready', function () {
+        //    container.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        //    console.log(chart_div.innerHTML);
+        //  });
+        //var btnSave = document.getElementById('btnExportPDF');
+        //btnSave.addEventListener('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.fromHTML(container, 0, 0);
+        //    doc.save('chart.pdf');
+        //  }, false);
+
+
+        chart.draw(view, options);
+         google.visualization.events.addListener(chart, 'select', function() {
+             var selectedItem = chart.getSelection();
+              if (selectedItem) {
+                  var value = dataTable.getValue(selectedItem[0].row,5);   //row is undefined
+                  window.location = "/Report/OperationNodeReport?LineId=" + value +"&ReportDate=" + $("#ReportDate").val();
+                }
+          });
+        //google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+        //    setTooltipContent(dataTable,e.row);
+        //});
+        //$('#ExportPDF').on('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.addImage(chart.getImageURI, 0, 0);
+        //    doc.save('chart.pdf');
+        //});
+
+    }
+    //function setTooltipContent(dataTable,row) {
+    //if (row != null) {
+    //    var content = '<div class="custom-tooltip" ><h1>' + dataTable.getValue(row, 0) + '</h1><div>' + dataTable.getValue(row, 1) + '</div></div>'; //generate tooltip content
+    //    var tooltip = document.getElementsByClassName("google-visualization-tooltip")[0];
+    //    tooltip.innerHTML = content;
+    //}
+//}
+    function ExportPDF() {
+            var pdf = new jsPDF('p', 'pt', 'letter');
+         pdf.addHTML(document.body, function () {
+             pdf.save('Test.pdf');
+         });
+    }
+
+    </script>
+
+
+}
+

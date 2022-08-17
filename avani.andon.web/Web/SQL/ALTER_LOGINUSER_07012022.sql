@@ -1,0 +1,14 @@
+CREATE TABLE [dbo].[tblUserLogin](
+	[Id] [int] NOT NULL,
+	[User_Id] [int] NOT NULL,
+	[Token] [nvarchar](100) NOT NULL,
+	[Time_Login] [datetime] NULL,
+	[Ip] [nvarchar](15) NULL,
+	[State] [bit] NULL,
+	[Expire_Date] [datetime] NOT NULL,
+ CONSTRAINT [PK__tblUserL__3214EC0771BCE661] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO

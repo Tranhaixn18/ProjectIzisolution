@@ -1,0 +1,565 @@
+﻿@model List<avSVAW.Models.WorkOrderPlanForm>
+@{
+    ViewBag.Title = Resources.Language.WorkingPlan;
+    //ViewBag.SubTitle = ViewBag.Title;
+    var WorkPlan = ViewBag.WorkPlanForm;
+    var PlanStart = ""; var PlanFinish = "";
+    if (WorkPlan.PlanStart != null)
+    {
+        PlanStart = Convert.ToDateTime(WorkPlan.PlanStart).ToString("yyyy/MM/dd HH:mm:ss");
+    }
+    if (WorkPlan.PlanFinish != null)
+    {
+        PlanFinish = Convert.ToDateTime(WorkPlan.PlanFinish).ToString("yyyy/MM/dd HH:mm:ss");
+    }
+}
+@section header{
+    @ViewBag.SubTitle
+}
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.WorkingPlan</h3>
+
+<style>
+    th{
+        text-align:center;
+    }
+    .ui-autocomplete {
+        background: #FFF;
+        border: 1px solid #CCC;
+        width: 150px;
+        padding: 0px;
+        margin: 0px;
+        z-index: 999999;
+    }
+
+    .bootstrap-datetimepicker-widget > ul {
+        padding: 0px;
+    }
+
+    .ui-autocomplete li {
+        list-style: none;
+        padding: 15px 5px 15px 20px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+        .ui-autocomplete li:hover {
+            background: #3c8dbc;
+            color: #FFF;
+        }
+
+    .label {
+        font-size: 100%;
+    }
+</style>
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("WorkingPlanDetail", "WorkingPlan", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <b class="control-label">@Resources.Language.Line :</b>
+                        </div>
+                        <div class="col-sm-3">
+                            <b class="control-label">@Resources.Language.PlanStart :</b>
+                        </div>
+                        <div class="col-sm-3">
+                            <b class="control-label">@Resources.Language.PlanFinish :</b>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            @if (WorkPlan.LineNames != null && WorkPlan.LineNames != "")
+                            {
+                                <span>  @WorkPlan.LineNames</span>
+                            }
+                            else if (WorkPlan.NodeNames != null && WorkPlan.NodeNames != "")
+                            {
+                                <span>  @WorkPlan.NodeNames</span>
+                            }
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="control-label">
+                                @PlanStart
+                            </span>
+                            <input type="hidden" value="@PlanStart" id="kPlanStart" />
+                        </div>
+                        <div class="col-sm-3">
+                            <span>  @PlanFinish</span>
+                        </div>
+
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box box-primary">
+            <div class="box-header">
+                <label class="control-label">@Resources.Language.WorkingOrderPlan</label>
+            </div>
+            <div class="box-body">
+                <table id="WorkOrderPlanTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Code</th>
+                            <th>@Resources.Language.Product</th>
+                            <th>@Resources.Language.TaktTime</th>
+                            <th>@Resources.Language.TotalQuantity</th>
+                            <th>@Resources.Language.PlannedQuantity</th>
+                            <th>@Resources.Language.RemainQuantity</th>
+                            <th>@Resources.Language.Quantity</th>
+                            <th>@Resources.Language.StartTime</th>
+                            <th>@Resources.Language.FinishTime</th>
+                            <th>@Resources.Language.Order</th>
+                            <th>@Resources.Language.Status</th>
+                            <th>@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                var strStatus = "label-primary";
+                                if (ev.Status == 1) //Đang chạy
+                                {
+                                    strStatus = "label-warning";
+                                }
+                                if (ev.Status == 2) //tạm dừng
+                                {
+                                    strStatus = "label-danger";
+                                }
+
+                                if (ev.Status == 3) //tạm dừng
+                                {
+                                    strStatus = "label-success";
+                                }
+
+                                <tr data-id="@ev.Id" data-norder="@ev.nOrder" data-workorderid="@*@ev.WorkOrderId*@" data-finishtime="@ev.PlanFinishStr" data-quantity="@ev.RemainQuantity" data-takttime="@ev.TaktTime">
+                                    <td>@iCount</td>
+
+                                    <td>@ev.ProductionName </td>
+                                    <td>@ev.Product.Name</td>
+                                    <td style="text-align:center">
+                                        @if (ev.TaktTime != null)
+                                        {
+                                            @Html.Raw(Convert.ToDouble(ev.TaktTime).ToString("").Replace(",", "."))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+                                    <td style="text-align:center">
+                                        @if (ev.WorkOrder.Quantity > 0)
+                                        {
+                                            @Html.Raw(Convert.ToInt32(ev.WorkOrder.Quantity).ToString("#,##0").Replace(".", ","))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+                                    <td style="text-align:center">
+                                        @if (ev.WorkOrder.QuantityPlanned > 0)
+                                        {
+                                            @Html.Raw(Convert.ToInt32(ev.WorkOrder.QuantityPlanned).ToString("#,##0").Replace(".", ","))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+                                    <td style="text-align:center">
+                                        @if (ev.RemainQuantity > 0)
+                                        {
+                                            @Html.Raw(Convert.ToInt32(ev.RemainQuantity).ToString("#,##0").Replace(".", ","))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("0")
+                                        }
+                                    </td>
+                                    <td style="text-align:center">
+                                        @*@if (ev.Quantity > 0)
+                                            {
+                                                @Html.Raw(Convert.ToInt32(ev.Quantity).ToString("#,##0").Replace(".",","))
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("0")
+                                            }*@
+                                    </td>
+                                    <td>@ev.PlanStartStr</td>
+                                    <td>@ev.PlanFinishStr</td>
+                                    <td style="text-align:center">@ev.nOrder</td>
+                                    <td> <span class="label @strStatus">@ev.StatusStr</span> </td>
+                                    <td>
+                                        @if (ev.Status == null || ev.Status < 3)
+                                        {
+                                            <button class="btn btn-primary  btn-xs editData" data-id="@ev.Id">
+                                                <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                            </button>
+                                        }
+                                        @if (ev.Status == 0 || ev.Status == null)
+                                        {
+                                            <a href="/WorkingPlan/Delete/@ev.Id?Quantity=@ev.WorkOrder.Quantity@*&WorkOrderId=@ev.WorkOrderId*@&WorkPlanId=@ev.WorkPlanId" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                                <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-success">
+            <div class="box-header">
+                <label class="control-label">@Resources.Language.Detail</label>
+            </div>
+            <div class="box-body">
+                <form action="/WorkingPlan/InsertWorkOrderPlan" class="form-horizontal" method="post">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.Code </label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="ACode" class="form-control" autocomplete="off" id="ACode" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.Product </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="AProductName" readonly="readonly" class="form-control" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.TaktTime </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" readonly="readonly" class="ATaktTime form-control" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.Order </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="AnOrder" name="nOrder" class="form-control" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.TotalQuantity </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="ATotalQuantity" readonly="readonly" class="form-control price" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.PlannedQuantity </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="APlannedQuantity" readonly="readonly" class="form-control price" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">   @Resources.Language.RemainQuantity </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="ARemainQuantity" readonly="readonly" class="form-control price" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-2">
+                            <label class="control-label"> @Resources.Language.Quantity  </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" required name="Quantity1" class="form-control AQuantity price" id="AQuantity" />
+                            <input type="hidden" name="Quantity" class="form-control  AQuantity AAQuantity" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">@Resources.Language.StartTime </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="datepicker input-group input-append">
+                                <input type="text" required name="StartTime" class="form-control" id="AStartTime" />
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label">  @Resources.Language.FinishTime </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="datepicker input-group input-append">
+                                <input type="text" required name="FinishTime" class="form-control" id="AFinishTime" />
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-primary">@Resources.Language.Save</button>
+                            <input type="hidden" name="WorkPlanId" value="@ViewBag.WorkPlanId" />
+                            <input type="hidden" name="WorkOrderId" id="WorkOrderId" value="0" />
+                            <input type="hidden" name="TaktTime" class="ATaktTime" value="" />
+                            <input type="hidden" name="Action" Id="AAction" value="1" />
+                            <input type="hidden" name="Id" Id="AId" value="0" />
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-default ClearData">@Resources.Language.Reset</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $('.datepicker').datetimepicker({
+            format: 'yyyy/MM/dd hh:mm:ss'
+        });
+        $("#ACode").autocomplete({
+            source: function (request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "/WorkingPlan/GetWorkOrder?Code=" + $("#ACode").val(),
+                    type: 'get',
+                    dataType: "json",
+                    success: function (data) {
+                        var filteredArray = $.map(data, function (item) {
+                            return {
+                                id: item.Id,
+                                label: item.Code + " | " + item.ProductName + " | " + item.Quantity,
+                                value: item.ProductName,
+                                Quantity: item.Quantity,
+                                QuantityPlanned: item.QuantityPlanned,
+                                Deadline: item.Deadline,
+                                ATaktTime: item.TaktTime,
+                            }
+                        });
+                        response(filteredArray);
+                    }
+                });
+            },
+            minLength: 0,
+            select: function (event, ui) {
+                // Set selection
+                $("#ACode").removeAttr('readonly');
+
+                var tables = $("#WorkOrderPlanTable tbody tr");
+
+                var isAdd = true;
+                $("#WorkOrderPlanTable tbody tr").each(function () {
+                    if (Number($(this).attr('data-workorderid')) == ui.item.id) {
+                        isAdd = false;
+                        var id = Number($(this).attr('data-id'));
+                        BeEditRow(id);
+                    }
+                });
+
+                if (isAdd) {
+                    $('#ACode').val(ui.item.label);
+                    $('#AProductName').val(ui.item.value);
+                    $('.ATaktTime').val(ui.item.ATaktTime);
+                    $('#ATotalQuantity').val(ui.item.Quantity);
+                    $('#APlannedQuantity').val(ui.item.QuantityPlanned);
+                    $('#ARemainQuantity').val(Number(ui.item.Quantity) - Number(ui.item.QuantityPlanned));
+                    $('.AQuantity').val(Number(ui.item.Quantity) - Number(ui.item.QuantityPlanned));
+                    $('#WorkOrderId').val(ui.item.id);
+                    $('#AId').val('0');
+                    var totalTable = tables.length;
+                    var order = 1;
+                    var starttime = '';
+                    var quantity = Number(ui.item.Quantity) - Number(ui.item.QuantityPlanned);
+                    var takltime = ui.item.ATaktTime;
+                    if (totalTable == 0) {
+                        starttime = $("#kPlanStart").val();
+                        order = 1;
+                    } else {
+                        $("#WorkOrderPlanTable tbody tr:last").each(function () {
+                            // if (Number($(this).attr('data-workorderid')) == ui.item.id) {
+                            starttime = $(this).attr('data-finishtime');
+                            // quantity = $(this).attr('data-quantity');
+                            order = Number($(this).attr('data-norder')) + 1;
+                            //  }
+                        });
+                    }
+                    if (starttime == "") {
+                        starttime = $("#kPlanStart").val();
+                    }
+
+                    $('#AStartTime').val(starttime);
+                    $('#AFinishTime').val(calFinishTime(starttime, quantity, takltime));
+
+                    $('#AnOrder').val(order);
+                }
+                loadPrice();
+                return false;
+            },
+        }).focus(function () {
+            $(this).autocomplete("search");
+        });
+        $(".ClearData").on("click", function () {
+            $('#AAction').val('1');
+            $('#ACode').val('');
+            $('#AProductName').val('');
+            $('.ATaktTime').val('');
+            $('#ATotalQuantity').val('');
+            $('#APlannedQuantity').val('');
+            $('#ARemainQuantity').val('');
+            $('.AQuantity').val('');
+            $('#WorkOrderId').val('');
+            $('#AnOrder').val('');
+            $('#AId').val('0');
+            $('#AStartTime').val('');
+            $('#AFinishTime').val('');
+            $("#ACode").removeAttr('readonly');
+        });
+        $(".editData").on("click", function () {
+            var id = Number($(this).attr('data-id'));
+            if (id > 0) {
+                BeEditRow(id);
+            }
+        });
+
+        $("#AQuantity").on("blur", function () {
+            var quantity = $(this).val();
+
+            var RemainQuantity = $("#ARemainQuantity").val();
+
+            var nquantity = quantity.replace(",", "");
+            var nRemainQuantity = RemainQuantity.replace(",", "");
+            if (Number(nquantity) > Number(nRemainQuantity)) {
+                $(".AQuantity").val(nRemainQuantity);
+                nquantity = nRemainQuantity;
+            } else {
+                $(".AQuantity").val(nquantity);
+            }
+            var takltime = $(".ATaktTime").val();
+            var tables = $("#WorkOrderPlanTable tbody tr");
+            var totalTable = tables.length;
+            if (totalTable == 0) {
+                starttime = $("#kPlanStart").val();
+                order = 1;
+            } else {
+                $("#WorkOrderPlanTable tbody tr:last").each(function () {
+                    // if (Number($(this).attr('data-workorderid')) == ui.item.id) {
+                    starttime = $(this).attr('data-finishtime');
+                    // quantity = $(this).attr('data-quantity');
+                    //  takltime = $(this).attr('data-takttime');
+                    // order = Number($(this).attr('data-norder')) + 1;
+                    //  }
+                });
+            }
+            if (starttime == "") {
+                starttime = $("#kPlanStart").val();
+            }
+            $('#AStartTime').val(starttime);
+
+            $('#AFinishTime').val(calFinishTime(starttime, nquantity, takltime));
+
+            loadPrice();
+        });
+
+
+
+        function BeEditRow(id) {
+            $.ajax({
+                url: "/WorkingPlan/GetWorkOrderPlan?Id=" + id,
+                type: 'get',
+                dataType: "json",
+                success: function (data) {
+                    EditRow(data);
+                }
+            });
+        }
+        function EditRow(data) {
+            $('#ACode').val(data.WorkOrder.Code);
+            $('#AProductName').val(data.Product.Name);
+            $('.ATaktTime').val(data.TaktTime);
+            $('#ATotalQuantity').val(data.WorkOrder.Quantity);
+            $('#APlannedQuantity').val(data.WorkOrder.QuantityPlanned);
+            $('#ARemainQuantity').val(Number(data.WorkOrder.Quantity) - Number(data.WorkOrder.QuantityPlanned));
+            $('.AQuantity').val(data.Quantity);
+            $('#WorkOrderId').val(data.WorkOrderId);
+            $('#AnOrder').val(data.nOrder);
+
+            $('#AStartTime').val(data.PlanStartStr);
+            $('#AFinishTime').val(data.PlanFinishStr);
+
+            $('#AAction').val('2');
+            $('#AId').val(data.Id);
+            $("#ACode").attr('readonly', 'readonly');
+            loadPrice();
+        }
+        function calFinishTime(starttime, quantity, takltime) {
+            var strdate = "";
+            if (starttime != null && starttime != "") {
+                var milliseconds = Date.parse(starttime);
+                milliseconds = milliseconds + Number(quantity) * Number(takltime) * 1000;
+                var date = new Date(milliseconds);
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                var hours = date.getHours();
+                var minute = date.getMinutes();
+                var secound = date.getSeconds();
+                var str1 = month < 10 ? "0" + month : month;
+                var str2 = day < 10 ? "0" + day : day;
+                var str3 = hours < 10 ? "0" + hours : hours;
+                var str4 = secound < 10 ? "0" + secound : secound;
+                var str5 = minute < 10 ? "0" + minute : minute;
+                strdate = date.getFullYear() + "/" + str1 + "/" + str2 + " "
+                    + str3 + ":" + str5 + ":" + str4;
+            }
+            return strdate;
+        }
+        function addCommas(x) {
+            var parts = x.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+        function loadPrice() {
+            $(".price").each(function () {
+                var p = $(this).val();
+                p = p.replace(",", "");
+                $(this).val(addCommas(Number(p)));
+            });
+        }
+    </script>
+}

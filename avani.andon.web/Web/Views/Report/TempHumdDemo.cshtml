@@ -1,0 +1,244 @@
+﻿
+@model List<avSVAW.Models.LogForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report + " " + Resources.Language.Running;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<style>
+    .working-percent {
+        float:left;
+        background-color: forestgreen;
+        color:white;
+        text-align:center;
+    }
+    .un-working-percent {
+        float:right;
+        background-color: gray;
+    }
+
+</style>
+<script src="~/assets/js/Chart.min.js"></script>
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("TempHumdDemo", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">Ngày</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="FromDate" name="strFromDate" data-format="yyyy/MM/dd" value="@ViewBag.FromDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">Giờ</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="bootstrap-timepicker">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" name="HourFrom" class="form-control timepicker" value="@ViewBag.HourFrom">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.form group -->
+                        </div>
+                    </div> 
+                    <div class="col-sm-1" style="margin-left:10px;">
+                        <div class="bootstrap-timepicker">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" name="HourTo" class="form-control timepicker"  value="@ViewBag.HourTo">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                    </div>
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                            <!-- /.form group -->
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @Html.Partial("~/Views/Common/TempNode.cshtml")
+                    <div class="col-sm-1">
+                        <label class="control-label">Loại</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select name="isOption" class="isOption form-control">
+                            @{
+                                string selected1 = "";
+                                string selected2 = "";
+                                if (ViewBag.isOption == "Temp") { selected1 = "selected"; }
+                                if (ViewBag.isOption == "Humd") { selected2 = "selected"; }
+                            }
+                            <option></option>
+                            <option value="Temp" @selected1>Temp</option>
+                            <option value="Humd" @selected2>Humd</option>
+                        </select>
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;Xem báo cáo</button>
+                            &nbsp;
+                           
+                            &nbsp;
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="chart col-sm-12">
+        <canvas id="lineChart"  height="200" width="930"></canvas>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+         //Timepicker
+        $('.timepicker').timepicker({
+            showInputs: false
+        });
+            $('#divFromDate').datetimepicker({
+                pickTime: true,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            var ctx = document.getElementById('lineChart');
+            var label = "";
+            var data = [];
+            var data1 = [];
+            var labels = [];
+            var datasets = [];
+            var options = {
+                legend: {
+                    display: true,
+                },
+                title: {
+                    display: true,
+                    text: 'Biểu đồ biến thiên ',
+                    fontSize: 24
+
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            fontSize: 16,
+                        },
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0, // it is for ignoring negative step.
+                            fontSize: 16,
+                            beginAtZero: true,
+                        },
+                    }]
+                }
+            };
+
+            @foreach(var m in Model)
+            {
+                @Html.Raw("labels.push('"+ m.strTime + "');");
+
+               if (ViewBag.isOption == "Temp") {
+                     @Html.Raw("data.push("+ Math.Round(m.Temp,1) +");");
+                }
+                else if (ViewBag.isOption == "Humd") {
+                     @Html.Raw("data.push("+ Math.Round(m.Humd,1)  +");");
+                } else {
+                     @Html.Raw("data.push("+ Math.Round(m.Temp,1)  +");");
+                     @Html.Raw("data1.push("+ Math.Round(m.Humd,1) +");");
+                }
+            }
+
+
+
+            if ($(".isOption").val() == "Temp") {
+                label = 'Nhiệt độ';
+                datasets[0] =
+                    {
+                        label: label,
+                        fill: false,
+                        borderColor: "blue",
+                        lineTension: 0.1,
+                        data:data
+                    };
+            }
+            else if ($(".isOption").val() == "Humd") {
+                label = 'Độ ẩm';
+                    datasets[0] =
+                        {
+                            label: label,
+                            fill: false,
+                            borderColor: "blue",
+                            lineTension: 0.1,
+                            data:data
+                        };
+            } else {
+                datasets[0] =
+                        {
+                            label: 'Nhiệt độ',
+                            fill: false,
+                            borderColor: "blue",
+                            lineTension: 0.1,
+                            data:data
+                    };
+                 datasets[1] =
+                        {
+                            label: 'Độ ẩm',
+                            fill: false,
+                            borderColor: "red",
+                            lineTension: 0.1,
+                            data:data1
+                    };
+
+            }
+            if ($("#NodeId").val() != "") {
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: datasets
+                    },
+                    options: options
+                });
+            }
+
+        });
+</script>
+
+
+}
+

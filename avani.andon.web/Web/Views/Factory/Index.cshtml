@@ -1,0 +1,77 @@
+﻿@model List<Model.DataModel.tblFactory>
+
+@section header{
+    @ViewBag.SubTitle
+}
+
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.Factory</h3>
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+          
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Name</th>
+                            <th>@Resources.Language.Description</th>
+                            <th>@Resources.Language.IP</th>
+                            <th>@Resources.Language.MaxWaitTime</th>
+                            <th>@Resources.Language.MaxProcessTime</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                            <tr>
+                                <td>
+                                    @i
+                                </td>
+                                <td>
+                                    @f.Name
+                                </td>
+                                <td>@f.Description </td>
+                                <td>
+                                    @f.IP
+                                </td>
+                                <td>@f.MaxWaitTime </td>
+                                <td>@f.MaxProcessTime </td>
+                               
+                            </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#EventDeflist').DataTable({
+                'paging': false,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+
+            $("#modalImport").click(function () {
+                $("#importcsv").modal('show');
+            });
+        });
+    </script>
+}

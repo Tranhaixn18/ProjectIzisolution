@@ -1,0 +1,29 @@
+﻿<div class="col-sm-1">
+    <label class="control-label">Sản phẩm</label>
+</div>
+<div class="col-sm-2">
+    <select id="ProductId" name="ProductId" class="form-control col-md-7 col-xs-12">
+        @{
+            var strSelect = "";
+            if (ViewBag.ProductId == null)
+            {
+                ViewBag.ProductId = "0";
+            }
+            for (var iType = 0; iType < ViewBag.Products.Count; iType++)
+            {
+                if (ViewBag.Products[iType].Value == ViewBag.ProductId)
+                {
+                    strSelect = " selected ";
+                }
+                else
+                {
+                    strSelect = "";
+                }
+                <option value="@ViewBag.Products[iType].Value" @strSelect> @Html.Raw(HttpUtility.HtmlDecode(@ViewBag.Products[iType].Text))</option>
+            }
+
+
+        }
+
+    </select>
+</div>

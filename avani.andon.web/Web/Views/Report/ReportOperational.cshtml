@@ -1,0 +1,243 @@
+﻿@model List<Model.Models.NodeOperationReportModel>
+
+@{
+    ViewBag.Title = "ReportOperational";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <style>
+        .label {
+            font-size: 100%;
+        }
+
+        th, td {
+            text-align: center
+        }
+    </style>
+}
+<h3 style="margin-top:-15px">Báo cáo vận hành</h3>
+<!--Tiêu chí lọc dữ liệu-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("ReportOperational", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.FromDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.ToDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divToDate" class="input-group input-append">
+                                <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd"
+                                       value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12">
+                                </input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- load template -->
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                        @Html.Partial("~/Views/Common/TempNode.cshtml")
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="ExportReportOperational()" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;@Resources.Language.ExportExcel</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row form-horizontal">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            @*<div class="box-header">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <b class="">@Resources.Language.StartTime</b>
+                        </div>
+                        <div class="col-sm-3">
+                            <b class="">@Resources.Language.FinishTime</b>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="">
+                                @ViewBag.StartDate
+                            </span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="">@ViewBag.EndDate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="text-align:center;">#</th>
+                            <th rowspan="2" style="text-align:center;">Mã chuyền</th>
+                            <th rowspan="2" style="text-align:center;">Tên chuyền</th>
+                            <th rowspan="2" style="text-align:center;">Mã công đoạn</th>
+                            <th rowspan="2" style="text-align:center;">Tên công đoạn</th>
+                            <th rowspan="2" style="text-align:center;">Tên máy</th>
+                            <th rowspan="2" style="text-align:center;">Kế hoạch làm việc</th>
+                            <th rowspan="2" style="text-align:center;">Thời gian chạy</th>
+                            <th rowspan="2" style="text-align:center;">Thời gian dừng</th>
+                            <th rowspan="2" style="text-align:center;">Thời gian mất kết nối</th>
+                            <th rowspan="2" style="text-align:center;">Tỷ lệ vận hành hiệu quả</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                //WorkPlan
+                                var HH = "";
+                                var mm = "";
+                                var h = item.WorkPlan / 3600;
+                                var tg = item.WorkPlan % 3600;
+                                var phut = tg / 60;
+                                var c = h < 10 ? HH = "0" + h.ToString() : HH = h.ToString();
+                                var p = phut < 10 ? mm = "0" + phut.ToString() : mm = phut.ToString();
+
+                                //RunningDuration
+                                var HH1 = "";
+                                var mm1 = "";
+                                var h1 = Convert.ToInt32(item.RunningDuration / 3600);
+                                var tg1 = Convert.ToInt32(item.RunningDuration % 3600);
+                                var phut1 = tg1 / 60;
+                                var c1 = h1 < 10 ? HH1 = "0" + h1.ToString() : HH1 = h1.ToString();
+                                var p1 = phut1 < 10 ? mm1 = "0" + phut1.ToString() : mm1 = phut1.ToString();
+
+                                //StopDuration
+                                var HH2 = "";
+                                var mm2 = "";
+                                var h2 = Convert.ToInt32(item.StopDuration / 3600);
+                                var tg2 = Convert.ToInt32(item.StopDuration % 3600);
+                                var phut2 = tg2 / 60;
+                                var c2 = h2 < 10 ? HH2 = "0" + h2.ToString() : HH2 = h2.ToString();
+                                var p2 = phut2 < 10 ? mm2 = "0" + phut2.ToString() : mm2 = phut2.ToString();
+
+                                //WaitDuration
+                                var HH3 = "";
+                                var mm3 = "";
+                                var h3 = Convert.ToInt32(item.WaitDuration / 3600);
+                                var tg3 = Convert.ToInt32(item.WaitDuration % 3600);
+                                var phut3 = tg3 / 60;
+                                var c3 = h3 < 10 ? HH3 = "0" + h3.ToString() : HH3 = h3.ToString();
+                                var p3 = phut3 < 10 ? mm3 = "0" + phut3.ToString() : mm3 = phut3.ToString();
+
+                                //Performance
+                                var result = item.Performance.ToString();
+                                int arr = result.IndexOf(",");
+                                int newLength = arr + 3;
+                                if (newLength == arr + 1)
+                                {
+                                    newLength--;
+                                }
+                                if (newLength > result.Length)
+                                {
+                                    newLength = result.Length;
+
+                                }
+                                var data = result.Substring(0, newLength);
+                                <tr>
+                                    <td>@iCount</td>
+                                    <td>@item.LineCode</td>
+                                    <td>@item.LineName</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><a href="/Report/DetailedOperationReport?StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&LineId=&NodeId=@item.NodeId">@item.NodeName</a></td>
+                                    <td>@HH:@mm</td>
+                                    <td>@HH1:@mm1</td>
+                                    <td>@HH2:@mm2</td>
+                                    <td>@HH3:@mm3</td>
+                                    <td>@* Lay sau dau phay 2 chu so *@ @data %</td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function ExportReportOperational() {
+            var url = '@Url.Action("ExportReportOperational", "Report")';
+            var _fromDate = $('#StartDate').val();
+            var _toDate = $('#EndDate').val();
+            var _lineId = $('#LineId').val();
+            var _nodeId = $('#NodeId').val();
+            var excelUrl = url + '?startDate=' + _fromDate + '&endDate=' + _toDate + '&lineId=' + _lineId + '&nodeId=' + _nodeId;
+            window.location.href = excelUrl;
+        };
+
+        $('#divFromDate').datetimepicker({
+            pickTime: false
+        });
+        $('#divToDate').datetimepicker({
+            pickTime: false
+        });
+
+
+
+        function ListNodeByLineId(val) {
+            var lineid = $('#line-change').val();
+            if (lineid != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ReportOperational", "Report")',
+                    data: { lineId: lineid },
+                })
+            }
+        }
+        function loadNode() {
+            var url = '@Url.Action("ReportOperational", "Report")';
+
+            var _lineId = $('#LineId').val();
+
+             var chuyenUrl = url + '?startDate='+'&endDate='+'&lineId=' + _lineId + '&nodeId='+ 0;
+
+            window.location.href = chuyenUrl;
+        }
+
+    </script>
+}
+

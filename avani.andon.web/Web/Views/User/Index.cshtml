@@ -1,0 +1,94 @@
+﻿@model List<avSVAW.Models.UserForm>
+
+@{
+    @*ViewBag.Title = Resources.Language.MenuUser;*@
+}
+
+
+
+@section Styles {
+    <style>
+        .label {
+            font-size: 100%;
+        }
+    </style>
+}
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.MenuUser</h3>
+
+<div class="row form-horizontal">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <a href="/User/Create">
+                    <button type="button" class="btn btn-success"><i class="fa fa-plus-circle"></i>&nbsp; @Resources.Language.Create &nbsp;</button>
+                </a>
+
+            </div>
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">#</th>
+                            <th rowspan="2">@Resources.Language.UserName</th>
+                            <th rowspan="2">@Resources.Language.UserFullName</th>
+                            <th rowspan="2">@Resources.Language.Role</th>
+                            <th rowspan="2">@Resources.Language.Line</th>
+                            <th rowspan="2">@Resources.Language.Language1</th>
+                            <th style="width: 20%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ var iCount = 1;}
+                        @foreach (var item in Model)
+                        {
+                            if (item != null)
+                            {
+                                <tr id="row_@item.ID">
+                                    <td>@iCount</td>
+                                    <td>@item.UserName</td>
+                                    <td>@item.FullName</td>
+                                    <td>@item.Role</td>
+                                    <td>@item.LineName</td>
+                                    <td>@item.Lang</td>
+                                    <td>
+                                        <a href="/User/Edit/@item.ID" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> @Resources.Language.Edit </a>
+                                        <a href="/User/Delete/@item.ID" class="btn btn-danger btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm');"><i class="fa fa-trash-o"></i> Xóa </a>
+                                    </td>
+                                </tr>
+                            }
+                            iCount++;
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function ExportReport() {
+            var url = '@Url.Action("ExportQuantityReport", "Report")';
+            var _fromDate = $('#StartDate').val();
+            var _toDate = $('#EndDate').val();
+            var _lineId = $('#LineId').val();
+            var _productId = $('#ProductId').val();
+            var excelUrl = url + '?startDate=' + _fromDate + '&endDate=' + _toDate + '&lineId=' + _lineId + '&productId=' + _productId;
+            window.location.href = excelUrl;
+        };
+
+        $('#divFromDate').datetimepicker({
+            pickTime: false
+        });
+        $('#divToDate').datetimepicker({
+            pickTime: false
+        });
+    </script>
+}
+
+
+
+
+

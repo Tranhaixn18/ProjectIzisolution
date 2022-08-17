@@ -1,0 +1,504 @@
+﻿
+@model List<avSVAW.Models.OperationForm>
+
+@{
+    /**/
+    //ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.Operation;
+    var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script type="text/javascript" src="~/Reports/charts/loader.js"></script>
+@*<script src="~/Report/jspdf/jspdf.min.js"></script>
+    <script src="~/Report/jspdf/html2canvas.js"></script>*@
+@*<script src="~/Report/jspdf/xeponline.jqplugin.js"></script>*@
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: gray;
+    }
+
+    .custom-tooltip {
+    }
+</style>
+<h3 style="margin-top:-16px">Biểu đồ vận hành</h3>
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("OperationNodeReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.FromDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.ToDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divToDate" class="input-group input-append">
+                                <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- load template -->
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                        @Html.Partial("~/Views/Common/TempNode.cshtml")
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;
+                            @*<button type="button" id="btnExportPDF" onclick="ExportPDF();" class="btn btn-warning"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp;Xuất Biểu đồ</button>
+                                &nbsp;*@
+                            @*<button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Xuất Excel</button>
+                            &nbsp;*@
+                        </div>
+                        <div class="col-sm-8" id="list-eventdef" style="background:#f3ebeb;padding:5px;">
+                            @foreach (var ed in ViewBag.EventDefs)
+                            {
+                                <div class="eventdef" id="EventDef-@ed.Id" data-name="@ed.Name_EN" data-id="@ed.Color" style="height:30px; width:30px;margin-right:10px; float:left; background:@ed.Color"></div>
+                                if (session.Lang != null && session.Lang.ToLower().CompareTo("en") == 0)
+                                {
+                                    <div style="height:30px; width:100px;line-height:30px; float:left;">@ed.Name_EN</div>
+                                }
+                                else
+                                {
+                                    <div style="height:30px; width:100px;line-height:30px; float:left;">@ed.Name_VN</div>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <!-- Report container -->
+                    <div id="divReportOperationContainer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="txtReason" name="reason" value="@Resources.Language.Reason" />
+<input type="hidden" id="txtFromDate" name="fromdate" value="@Resources.Language.From" />
+<input type="hidden" id="txtToDate" name="todate" value="@Resources.Language.To" />
+
+
+<div class="modal fade" id="editReason" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">@Resources.Language.Reason</h3>
+                <button type="button" class="close" style="margin-top:-32px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach (var gReason in ViewBag.Reasons)
+                {
+                    if (gReason.GroupId == 0)
+                    {
+
+                        <div class="form-group">
+                            <div class="col-md-12"> <b>@gReason.GroupName</b></div>
+                            <div class="clearfix"></div>
+                            @foreach (var gg in ViewBag.Reasons)
+                            {
+                                if (gg.GroupId == gReason.Id)
+                                {
+                                    <div class="col-md-12">
+                                        <input id="group-id_@gg.Id" style="margin-left:10px;" type="radio" name="groupreason" value="@gg.Name" />
+                                        <label style="float: none!important; font-weight: normal;" for="group-id_@gg.Id"> @gg.Name </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    }
+                }
+
+                <div class="form-group">
+                    <div class="col-md-12"> <b>@Resources.Language.Other</b></div>
+                    <div class="clearfix"></div>
+                    <div class="col-md-2">
+                        <input style="margin-left:10px;" id="group-id_0" type="radio" name="groupreason" value="0" />  <label style="float: none!important; font-weight: normal;" for="group-id_0"> @Resources.Language.Other </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input type="text" style="display:none;" name="groupother" value="" id="Reason" />
+                    </div>
+                </div>
+
+                <div class="col-md-8 form-group">
+                    <input type="hidden" name="modelId" id="modelId" value="0" />
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                @if (Common.UserFunction.USER_LINE_LEADER(session.Role) || Common.UserFunction.USER_ADMIN(session.Role))
+                {
+                    <button type="button" id="save-reason" class="btn btn-primary">@Resources.Language.Save</button>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Resources.Language.Back</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+			$('#divToDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            CreateOperationTimeline();
+
+            $("#save-reason").click(function () {
+                var id = Number($("#modelId").val());
+                var reason = $("#Reason").val();
+                if (id > 0) {
+                    if (reason != "") {
+                        $.ajax({
+                            url: "/ListLoss/UpdateReason",
+                            data: {
+                                Id: id,
+                                Reason: reason
+                            },
+                            type: "POST",
+                            success: function (result) {
+                                if (result == 'OK') {
+                                    window.location.reload();
+                                } else {
+                                    console.log("error", result);
+                                    alert("Có lỗi");
+                                }
+                            },
+                            error: function (errormessage) {
+                                console.log("error", errormessage);
+                                alert("Có lỗi");
+                            }
+                        }).done(function () {
+                        });
+                    } else {
+                    }
+                }
+            });
+            $('input[name="groupreason"]').change(function () {
+                if ($(this).val() == "0") {
+                    $("#Reason").show();
+                    $("#Reason").val("");
+                } else {
+                    $("#Reason").hide();
+                    $("#Reason").val($(this).val());
+                }
+
+            });
+        });
+
+        function ExportExcel() {
+            var url = '@Url.Action("OperationNodeToExcel", "Report")';
+             var lineid = $("#LineId").val();
+              var StartDate = $("#StartDate").val();
+			  var NodeId = $("#NodeId").val();
+            var EndDate = $("#EndDate").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?StartDate=' + StartDate + '&EndDate='+EndDate+'&LineId=' + lineid+'&NodeId='+NodeId;
+            window.location.href = ExcelURL;
+        };
+         function ExportPDF() {
+            var reportdate = $("#ReportDate").val();
+            var nodetype = $("#NodeType").val();
+            $.ajax({
+                url: "/Report/PrintOperationChart",
+                data: {
+                    ReportDate: reportdate,
+                    NodeType: nodetype
+                },
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //alert(result);
+                    window.open(result, '_blank');
+                    //console.log(result);
+                    //$.each(result, function (key, item) {
+                    //    $("#CustomerId").append("<option value='" + item.ID + "'>" + item.Name + "</option>");
+                    //});
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+                    alert("Có lỗi xảy ra khi tạo báo cáo");
+                    //alert(errormessage.responseText);
+                }
+
+            });
+        }
+
+        function CreateOperationTimeline() {
+
+            //Get condition
+            var StartDate = $("#StartDate").val();
+            var EndDate = $("#EndDate").val();
+            var lineId = $("#LineId").val();
+            var NodeId = $("#NodeId").val();
+            //alert(reportdate);
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetOperationNodeReport?StartDate=' + StartDate + '&EndDate=' + EndDate + '&LineId='+lineId+'&NodeId=' + NodeId,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+                    DataList = data;
+                    var divOperationContainer = $('#divReportOperationContainer');
+                    //var divChartContainer = $('#divChartOperationContainer');
+                    divOperationContainer.empty();
+
+                    //Legend
+                    //divOperationContainer.append('<div id="legendContainer" class="LegendContainer"></div>');
+                    //var divlegendContainer = $('#legendContainer');
+                    //divlegendContainer.append(strLegend);
+
+
+                    //alert(DataList.length);
+                    divOperationContainer.append('<div id="chartContainer" style="height: 100%; width: 100%; min-height:3600px"></div>');
+                    google.charts.load("current", { packages: ["timeline"] });
+                    google.charts.setOnLoadCallback(GoogleDrawTimeline);
+
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });;
+            //$('#divLoadingReport').html('');
+        }
+
+    function GoogleDrawTimeline() {
+
+       // alert(DataList.length);
+        var container = document.getElementById('chartContainer');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'NodeName' });
+        dataTable.addColumn({ type: 'string', id: 'Reason' });
+        dataTable.addColumn({ type: 'string',  id: 'style', role: 'style' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addColumn({ type: 'string', id: 'ID' });
+        //return;
+        var arrColorDef = [];
+        arrColorDef.push('#FFFFFF');
+        $("#list-eventdef .eventdef").each(function () {
+            arrColorDef.push($(this).attr('data-id'));
+        })
+
+        for (var j = 0; j < DataList.length; j++) {
+            var item = DataList[j];
+             var color = $("#EventDef-" + item.EventDefId).attr('data-id');
+             var eventName = $("#EventDef-" + item.EventDefId).attr('data-name');
+            //alert(item.StartTime + "~" + item.FinishTime);
+            //console.log(item.NodeName + '~' + item.EventDefName + '~' + new Date(item.StartTime) + '~' + new Date(item.FinishTime));
+            var fromDate = new Date();
+            if (item.strFromDate != "undefined" && item.strFromDate!=null) {
+                fromDate = new Date(item.strFromDate);
+            }
+            var reason = "";
+            if (item.Reason != null) {
+                reason = item.Reason;
+            }
+            dataTable.addRow([item.NodeName, reason, color, new Date(item.strStartDate), fromDate,item.Id+""]);
+            //arrColors.push(arrColorDef[item.EventDefId - 1]);
+
+            //alert(arrColorDef[item.EventDefId]);
+            //dataTable.addRow([item.NodeName, item.NodeId, item.EventDefName, item.StartTime, item.FinishTime]);
+        }
+
+         var d = $("#StartDate").val();
+            var d2 = $("#EndDate").val();
+
+        var _day1 = parseInt(d.substr(0, 2)), _month = parseInt(d.substr(3, 2)); _year = parseInt(d.substr(6, 4));
+        var _day2 = parseInt(d2.substr(0, 2)), _month = parseInt(d2.substr(3, 2)); _year = parseInt(d2.substr(6, 4));
+
+        //console.log(new Date(_year, _month, _day, 0, 0, 0));
+        //console.log(new Date(_year, _month, _day, 23, 59, 59));
+        var options = {
+            enableInteractivity: true,
+            colors: arrColorDef,
+            allowHtml: true,
+            hAxis: {
+                format: 'HH:mm',
+                gridlines: { count: 24 },
+                minValue: new Date(d),
+                maxValue: new Date(d2)
+            },
+            timeline: {
+                showBarLabels: false,
+                enableInteractivity: false,
+                groupByRowLabel: true
+            }
+        };
+
+
+        var view = new google.visualization.DataView(dataTable);
+        view.hideColumns([5]);
+        //google.visualization.events.addListener(chart, 'ready', function () {
+        //    container.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        //    console.log(chart_div.innerHTML);
+        //  });
+        //var btnSave = document.getElementById('btnExportPDF');
+        //btnSave.addEventListener('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.fromHTML(container, 0, 0);
+        //    doc.save('chart.pdf');
+        //  }, false);
+
+
+        chart.draw(view, options);
+        google.visualization.events.addListener(chart, 'select', function () {
+            var selectedItem = chart.getSelection();
+            if (selectedItem) {
+
+                var textReason = dataTable.getValue(selectedItem[0].row, 1);   //row is undefined
+                var id = dataTable.getValue(selectedItem[0].row, 5);   //row is undefined
+                $("#editReason").modal('show');
+                $("#Reason").val(reason);
+                $("#ID").val(id);
+
+                if (Number(id) > 0) {
+                    textReason = textReason.trim();
+                    $('input[name="groupreason"]').each(function () {
+                        if ($(this).val() == textReason) {
+                            $(this).prop('checked', true);
+                        } else {
+                            $(this).prop('checked', false);
+                        }
+                    });
+
+                    $("#editReason").modal('show');
+                    $("#modelId").val(id);
+
+                    $("#Reason").val("");
+                }
+                document.getElementsByClassName("google-visualization-tooltip")[0].style.display = "none";
+            }
+        });
+      google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+           setTooltipContent(dataTable,e.row);
+        });
+
+
+        //$('#ExportPDF').on('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.addImage(chart.getImageURI, 0, 0);
+        //    doc.save('chart.pdf');
+        //});
+
+    }
+    function setTooltipContent(dataTable,row) {
+    if (row != null) {
+	var txtReason = $("#txtReason").val();
+	var txtFromDate = $("#txtFromDate").val();
+	var txtToDate = $("#txtToDate").val();
+        var content = '<div class="custom-tooltip" style="padding:2px;"><h5 style="border-bottom:1px solid #CCC;padding-bottom:10px;"><b>' + dataTable.getValue(row, 0) + '</b></h5>'+
+		'<div><b>'+txtFromDate+':</b> ' + getDate(dataTable.getValue(row, 3))+ '</div>'+
+		'<div><b>'+txtToDate+':</b> ' + getDate(dataTable.getValue(row, 4)) + '</div>';
+		var reason = dataTable.getValue(row, 1) ;
+		if(reason!=null && typeof reason !="undefined"){
+		content +='<div>' + dataTable.getValue(row, 1) + '</div></div>'; //generate tooltip content
+		}
+        var tooltip = document.getElementsByClassName("google-visualization-tooltip")[0];
+
+        tooltip.innerHTML = content;
+    }
+	}
+    function ExportPDF() {
+            var pdf = new jsPDF('p', 'pt', 'letter');
+         pdf.addHTML(document.body, function () {
+             pdf.save('Test.pdf');
+         });
+    }
+	function getDate(dateObject) {
+		var d = new Date(dateObject);
+		var day = d.getDate();
+		var month = d.getMonth() + 1;
+		var year = d.getFullYear();
+		if (day < 10) {
+			day = "0" + day;
+		}
+		if (month < 10) {
+			month = "0" + month;
+		}
+		var curr_hour = d.getHours();
+		var curr_min = d.getMinutes();
+		var curr_sec = d.getSeconds();
+		if (curr_hour < 10) {
+			curr_hour = "0" + curr_hour;
+		}
+		if (curr_min < 10) {
+			curr_min = "0" + curr_min;
+		}
+		if (curr_sec < 10) {
+			curr_sec = "0" + curr_sec;
+		}
+		var date =year + "/" + month + "/" +  day +" "+curr_hour + ":" +curr_min + ":" +curr_sec;
+
+		return date;
+	}
+
+    </script>
+
+
+}
+

@@ -1,0 +1,183 @@
+﻿@model List<Model.Models.OEEReportModel>
+
+@{
+    ViewBag.Title = "ReportOperational";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <style>
+        .label {
+            font-size: 100%;
+        }
+
+        th {
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+}
+<h3 style="margin-top:-16px">Báo cáo OEE</h3>
+<!--Tiêu chí lọc dữ liệu-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("OEEReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.FromDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.ToDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divToDate" class="input-group input-append">
+                                <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- load template -->
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="ExportOEEReport()" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;@Resources.Language.ExportExcel</button>
+                        </div>
+
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row form-horizontal">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            @*<div class="box-header">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <b class="">@Resources.Language.StartTime</b>
+                        </div>
+                        <div class="col-sm-3">
+                            <b class="">@Resources.Language.FinishTime</b>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="">@ViewBag.StartDate</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="">@ViewBag.EndDate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="text-align:center;">#</th>
+                            <th rowspan="2" style="text-align:center;">Ngày</th>
+                            <th rowspan="2" style="text-align:center;">Mã chuyền</th>
+                            <th rowspan="2" style="text-align:center;">Tên chuyền</th>
+                            <th rowspan="2" style="text-align:center;">Mã công đoạn</th>
+                            <th rowspan="2" style="text-align:center;">Tên công đoạn</th>
+                            <th rowspan="2" style="text-align:center;">Kế hoạch (Thời gian)</th>
+                            <th rowspan="2" style="text-align:center;">Chạy (Thời gian)</th>
+                            <th rowspan="2" style="text-align:center;">Hiệu suất (Thời gian)</th>
+                            <th rowspan="2" style="text-align:center;">Kế hoạch (Sản lượng)</th>
+                            <th rowspan="2" style="text-align:center;">Thực tế (Sản lượng)</th>
+                            <th rowspan="2" style="text-align:center;">Hiệu suất (Sản lượng)</th>
+                            <th rowspan="2" style="text-align:center;">Số lượng PASS (Chất lượng)</th>
+                            <th rowspan="2" style="text-align:center;">Số lượng FAIL (Chất lượng)</th>
+                            <th rowspan="2" style="text-align:center;">Tỷ lệ</th>
+                            <th rowspan="2" style="text-align:center;">OEE</th>
+
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@iCount</td>
+                                    <td>@item.Started</td>
+                                    <td>@item.LineCode</td>
+                                    <td>@item.LineName</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>@item.PlanDuration</td>
+                                    <td>@item.ActualDuration</td>
+                                    <td>@item.PlanPerformance</td>
+                                    <td>@item.PlanQuantity</td>
+                                    <td>@item.ActualQuantity</td>
+                                    <td>@item.ActualPerformance</td>
+                                    <td>@item.Pass</td>
+                                    <td>@item.NG</td>
+                                    <td>@item.Ratio</td>
+                                    <td>@item.OEE</td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function ExportOEEReport() {
+            var url = '@Url.Action("ExportOEEReport", "Report")';
+            var _fromDate = $('#StartDate').val();
+            var _toDate = $('#EndDate').val();
+            var _lineId = $('#LineId').val();
+            var _nodeId = $('#NodeId').val();
+            var excelUrl = url + '?startDate=' + _fromDate + '&endDate=' + _toDate + '&lineId=' + _lineId + '&nodeId=' + _nodeId;
+            window.location.href = excelUrl;
+        };
+
+        $('#divFromDate').datetimepicker({
+            pickTime: false
+        });
+        $('#divToDate').datetimepicker({
+            pickTime: false
+        });
+    </script>
+}
+
+
+
+

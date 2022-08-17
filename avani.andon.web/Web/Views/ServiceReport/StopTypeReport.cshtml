@@ -1,0 +1,264 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.Running;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    string DataValue = "", DataLabel = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/custom.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/Scripts/adminlte/components/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/js/Chart.min.js"></script>
+    <style>
+      body{background:#FFF;color:#333;}
+        div.box{background:#FFF;height:auto; border:0px;margin-top:20px;}
+        .center{text-align:center;}
+        .form-group{width:60%;margin:auto;}
+        .control-label,.control-value{font-size:20px;}
+        .box-body{text-align:center;}
+         .header{border-bottom: 2px solid #000;width:100%;text-align:center;}
+        .header .logo{position:absolute;left:30px; top:10px;}
+        .header .logo img{height:90px;}
+        .header .company-info{text-align:center;}
+        .header .company-info p{font-size:30px;}
+         .working-percent {
+                float:left;
+                background-color: forestgreen;
+                color:white;
+                text-align:center;
+            }
+            .un-working-percent {
+                float:right;
+                background-color: gray;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img src="~/assets/img/favicon-small.png" /></div>
+        <div class="company-info">
+            <h1>SUMIDEN VIETNAM AUTOMOTIVE WIRE</h1>
+            <p> Nhà máy : F2 Hưng Yên </p>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+          
+            <div class="form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Từ ngày : @ViewBag.FromDate</label>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Đến ngày : @ViewBag.ToDate</label>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Ca làm việc : @ViewBag.WorkShift</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        @{
+            double MaxEff = -1;
+            double MinEff = 101;
+            double AverageEff = 0;
+            double TotalEff = 0;
+            int iCount = 1, iWorkingCount = 0;
+
+            double TotalRunning = 0, TotalStop = 0, TotalPlan = 0, TotalWorkingPercent = 0;
+            int TotalNodes = 0;
+            string _NodeName = "";
+
+        }
+        <br />
+        <table id="EFF" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Resources.Language.NodeType</th>
+                    <th>@Resources.Language.NumberOfNode</th>
+                    <th>@Resources.Language.RunningDuration (H)</th>
+                    <th>@Resources.Language.StopDuration (H)</th>
+                    <th>@Resources.Language.WorkingPlan (H)</th>
+                    <th>@Resources.Language.EffOperation (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @iCount
+                        </td>
+
+                        <td>
+                            <a href="/Report/EffReport?FromDate=@ViewBag.FromDate&ToDate=@ViewBag.ToDate&NodeType=@item.NodeTypeId&WorkShift=@ViewBag.WorkShift">
+                                @{
+                                    _NodeName = item.NodeTypeName;
+                                    if (item.NodeTypeName.StartsWith("B-"))
+                                    {
+                                        _NodeName = "---- " + _NodeName;
+                                    }
+                                }
+
+                                @_NodeName
+                            </a>
+                        </td>
+
+                        <td style="text-align:right">
+                            @item.NumberOfNodes.ToString("#,##0")
+                        </td>
+
+                        <td style="text-align:right">
+                            @item.RunningDurationInHour.ToString("#,##0.00")
+                        </td>
+
+                        <td style="text-align:right">
+                            @item.StopDurationInHour.ToString("#,##0.00")
+                        </td>
+
+                        <td style="text-align:right">
+                            @item.PlanDurationInHour.ToString("#,##0")
+                        </td>
+
+                        <td style="width:40%">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                @{
+                                    var WorkingPercent = item.WorkingPercent;
+                                    if (WorkingPercent > 100)
+                                    {
+                                        WorkingPercent = 100;
+                                    }
+                                    var UnWorkingPercent = 100 - item.WorkingPercent;
+                                    if (UnWorkingPercent < 100)
+                                    {
+                                        if (UnWorkingPercent > 96)
+                                        {
+                                            UnWorkingPercent = 96;
+                                        }
+                                    }
+                                }
+                                <table width="100%" class="un-working-percent">
+                                    <tr>
+                                        @if (WorkingPercent >= 0)
+                                        {
+                                            <td class="working-percent" width="@WorkingPercent%;">
+                                                @item.WorkingPercent %
+                                            </td>
+                                        }
+                                        @if (WorkingPercent < 100)
+                                        {
+                                            <td class="un-working-percent">
+                                            </td>
+                                        }
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+
+                        @{
+                            if (item.WorkingPercent >= 0)
+                            {
+                                if (item.WorkingPercent > MaxEff)
+                                {
+                                    MaxEff = item.WorkingPercent;
+                                }
+                                if (item.WorkingPercent < MinEff)
+                                {
+                                    MinEff = item.WorkingPercent;
+                                }
+
+                                TotalEff += item.WorkingPercent;
+                                iWorkingCount++;
+                            }
+                            iCount++;
+                            if (item.NodeTypeName != "B")
+                            {
+                                TotalNodes += item.NumberOfNodes;
+                                TotalRunning += item.RunningDurationInHour;
+                                TotalStop += item.StopDurationInHour;
+                                TotalPlan += item.PlanDurationInHour;
+                                TotalWorkingPercent += item.NumberOfNodes * item.WorkingPercent;
+
+                            }
+                        }
+
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                @{
+                    if (MinEff == 101)
+                    {
+                        MinEff = 0;
+                    }
+
+                    if (MaxEff == -1)
+                    {
+                        MaxEff = 0;
+                    }
+                    AverageEff = Math.Round(TotalEff / (double)iWorkingCount, 1);
+                    TotalWorkingPercent = Math.Round(TotalWorkingPercent / (double)TotalNodes, 1);
+                }
+                @*<tr>
+                        <th colspan="6" style="text-align:right">@Resources.Language.Max</th>
+                        <th style="text-align:right">@MaxEff</th>
+                    </tr>
+                    <tr>
+                        <th colspan="6" style="text-align:right">@Resources.Language.Min</th>
+                        <th style="text-align:right">@MinEff</th>
+                    </tr>
+                    <tr>
+                        <th colspan="6" style="text-align:right">@Resources.Language.Average</th>
+                        <th style="text-align:right">@AverageEff</th>
+                    </tr>*@
+
+                <tr>
+                    <th style="text-align:right">&nbsp;</th>
+                    <th style="text-align:right">@Resources.Language.Total</th>
+                    <th style="text-align:right">@TotalNodes.ToString("#,##0")</th>
+                    <th style="text-align:right">@TotalRunning.ToString("#,##0")</th>
+                    <th style="text-align:right">@TotalStop.ToString("#,##0")</th>
+                    <th style="text-align:right">@TotalPlan.ToString("#,##0")</th>
+                    <th style="text-align:center">@TotalWorkingPercent % </th>
+                </tr>
+
+            </tfoot>
+        </table>
+
+        <div class="ln_solid"></div>
+
+    </div>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $('#inventory').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,141 @@
+﻿@model Model.DataModel.tblEventDef
+@{
+
+    @*ViewBag.Title = Resources.Language.EventDef;
+        ViewBag.SubTitle = Resources.Language.Edit + " " + Resources.Language.EventDef;*@
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<h3 style="margin-top: -10px;">@Resources.Language.Edit @Resources.Language.EventDef</h3>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @*<form class="form-horizontal" id="frmDetail" method="post" action="@Url.Action("UpdateRecord")">*@
+            @using (Html.BeginForm("Edit", "EventDef", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="box-body">
+
+                    <input type="hidden" name="EventDefId" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name_EN, Resources.Language.Name + "EN", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name_EN, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name_EN, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name_VN, Resources.Language.Name + " VN", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name_VN, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name_VN, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-10 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.zOrder, Resources.Language.Order, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.zOrder, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.zOrder, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Color, Resources.Language.Color, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="input-group av-colorpicker" style="display: flex;">
+                                @Html.TextBoxFor(model => model.Color, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12", @id = "hexcolor" })
+                                <input type="color" name="color" id="color1" value="#ff0000" style=" margin-left: 14px; margin-top: 4px;" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <div class="form-group">
+                            <div class="col-sm-2">
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="@Url.Action("Index")" class="btn btn-default">
+                                    @Resources.Language.Back
+                                </a>
+                                <button type="submit" class="btn btn-success">Ghi lại</button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script src="~/assets/js/jquery.validate.js"></script>
+
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                    Name_EN: {
+                        required: true
+                    },
+                    Name_VN: {
+                        required: true
+                    },
+                    zOrder: {
+                        required: true,
+                        number: true
+                    },
+                    Color: {
+                        required: true
+                    },
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var hexcolor = $("#hexcolor").val();
+            $("[name = color]").on('change', function () {
+                hexcolor = this.value;
+                document.getElementById("hexcolor").value = hexcolor;
+            });
+        });
+    </script>
+}

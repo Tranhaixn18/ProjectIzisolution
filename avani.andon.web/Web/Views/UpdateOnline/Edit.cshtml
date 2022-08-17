@@ -1,0 +1,154 @@
+﻿@model Model.DataModel.tblLineOnline
+@{
+
+    ViewBag.Title = Resources.Language.UpdateOnlineValue + " [BE CAREFUL WHEN USE THIS UPDATE]";
+}
+@section header{
+    @ViewBag.Title
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 25px;
+            width: 25px;
+            /*background-color: #eee;*/
+        }
+    </style>
+
+}
+
+@section Scripts{
+    <script>
+        //add css for attach file element
+        var input = $("input:file").css({
+            width: "100%",
+            border: "0.1px solid"
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+        })
+
+    </script>
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Edit", "UpdateOnline", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate" }))
+            {
+
+            <div class="box-body">
+
+                <input type="hidden" name="LineId" class="form-control" value="@Model.LineId" />
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.LineName, Resources.Language.Line, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.LineName, htmlAttributes: new { @readonly = true, @class = "form-control col-md-7 col-xs-12" })
+                        @*@Html.LabelFor(model => model.LineName, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })*@
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Plan, Resources.Language.Plan + " (Diff - Pcs)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Plan, htmlAttributes: new { @Value = "0", @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Plan, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.StartTime, Resources.Language.StartTime + "", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.StartTime, "{0:yyyy-MM-dd HH:mm}", htmlAttributes: new { @class = "form -control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Actual, Resources.Language.Actual + " (Diff - Pcs)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Actual, htmlAttributes: new { @Value = "0", @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Actual, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.TakeTime, Resources.Language.TaktTime + " (Seconds)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.TakeTime, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.TakeTime, "", new { @class = "text-danger" })
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.HeadCount, Resources.Language.Headcount + " (People)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.HeadCount, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.HeadCount, "", new { @class = "text-danger" })
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Quality, Resources.Language.Quality + " (%)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Quality, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Quality, "", new { @class = "text-danger" })
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.StopDuration, Resources.Language.StopDuration + " (Add - Minute)", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.StopDuration, htmlAttributes: new { @Value = "0", @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.StopDuration, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+

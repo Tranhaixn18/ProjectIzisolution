@@ -1,0 +1,160 @@
+﻿
+<aside class="main-sidebar">
+    <section class="sidebar">
+        @{
+            var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+            var lines = new Model.Dao.LineDao().listAll();
+        }
+
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="current-page">
+                <a href="/Home/Index"><i class="fa fa-home"></i> <span>@Resources.Language.MenuHome</span></a>
+            </li>
+
+            <li class="@Html.IsSelected(controller: "ListLoss") treeview">
+                <a href="#">
+                    <i class="fa fa-eye"></i> <span>@Resources.Language.MenuMonitoring</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-chevron-down pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @foreach (var l in lines)
+                    {
+                        <li>
+                            <a target="_blank" href="/NodeOnline/Index/@l.Id"><i class="fa fa-circle-o"></i> @l.Name</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+
+            @if (session != null)
+            {
+                if (Common.UserFunction.USER_REPORT(session.Role))
+                {
+
+                    <li class="@Html.IsSelected(controller: "Report") treeview">
+                        <a href="">
+                            <i class="fa fa-bar-chart"></i> <span>@Resources.Language.Report</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-chevron-down pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="@Html.IsSelected(action: "ReportWorkPlan", controller: "Report")">
+                                <a href="@Url.Action("ReportWorkPlan", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.Productionreport</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "ReportOperational", controller: "Report")">
+                                <a href="@Url.Action("ReportOperational", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.OperationalReport</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "QuantityReport", controller: "Report")">
+                                <a href="@Url.Action("QuantityReport", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.QuantityReport</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "ProductivityReport", controller: "Report")">
+                                <a href="@Url.Action("ProductivityReport", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.ProductivityReport</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "OEEReport", controller: "Report")">
+                                <a href="@Url.Action("OEEReport", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.OEE</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "ChartProduction", controller: "Report")">
+                                <a href="@Url.Action("ChartProduction", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.VariationChart</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "ProductionQualityReport", controller: "Report")">
+                                <a href="@Url.Action("ProductionQualityReport", "Report")"><i class="fa fa-circle-o"></i>@Resources.Language.ProductionQualityReport</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                if (Common.UserFunction.USER_MENU_PRODUCTION(session.Role))
+                {
+                    <li class="@Html.IsSelected(controller: "WorkingShift")
+                                @Html.IsSelected(controller: "StopWorkingPlan")
+                                @Html.IsSelected(controller: "WorkingPlan")
+                                @Html.IsSelected(controller: "BreakTime")
+                                @Html.IsSelected(controller: "ImportProduction")
+								@Html.IsSelected(controller: "WorkOrder")
+								@Html.IsSelected(controller: "Product")
+								@Html.IsSelected(controller: "Schedule")
+								@Html.IsSelected(controller: "LineSchedule")
+								@Html.IsSelected(controller: "Reason")
+                                @Html.IsSelected(controller:"LineOnline")
+                                treeview">
+                        <a href="@Url.Action("Index", "Report")">
+                            <i class="fa fa-cogs"></i> <span>@Resources.Language.MenuProduction</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-chevron-down pull-right"></i>
+                            </span>
+                        </a>
+
+                        <ul class="treeview-menu">
+
+                            <li class="@Html.IsSelected(controller: "Product")">
+                                <a href="@Url.Action("Index", "Product")"><i class="fa fa-circle-o"></i>@Resources.Language.Product</a>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "Schedule")">
+                                <a href="@Url.Action("Index", "Schedule")"><i class="fa fa-circle-o"></i>@Resources.Language.Schedule</a>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "LineSchedule")">
+                                <a href="@Url.Action("Index", "LineSchedule")"><i class="fa fa-circle-o"></i>@Resources.Language.LineSchedule</a>
+                            </li>
+
+                            <li class="@Html.IsSelected(controller: "WorkingPlan")">
+                                <a href="@Url.Action("Index", "WorkingPlan")"><i class="fa fa-circle-o"></i>Kế hoạch sản xuất</a>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "WorkOrder")">
+                                <a href="@Url.Action("Index", "WorkOrder")"><i class="fa fa-circle-o"></i>@Resources.Language.WorkOrder</a>
+                            </li>
+                            <li class="@Html.IsSelected(action: "LineMornitoring", controller: "LineOnline")"><a href="@Url.Action("LineMornitoring", "LineOnline")"><i class="fa fa-circle-o"></i>Giám sát sản xuất</a></li>
+                            }
+                        </ul>
+                    </li>
+                }
+                if (Common.UserFunction.USER_DICTIONARY(session.Role))
+                {
+                    <li class="@Html.IsSelected(controller: "Factory")
+                                @Html.IsSelected(controller: "Line")
+                                @Html.IsSelected(controller: "Node")
+                                @Html.IsSelected(controller: "EventDef")
+                                @Html.IsSelected(controller:"Employee")
+                                @Html.IsSelected(controller: "Department")
+                                treeview">
+                        <a href="">
+                            <i class="fa fa-cogs"></i> <span>@Resources.Language.Dictionary</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-chevron-down pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="@Html.IsSelected(action: "Index", controller: "Factory")"><a href="@Url.Action("Index", "Factory")"><i class="fa fa-circle-o"></i>@Resources.Language.Factory</a></li>
+                            <li class="@Html.IsSelected(action: "Index", controller: "Line")"><a href="@Url.Action("Index", "Line")"><i class="fa fa-circle-o"></i>@Resources.Language.Line</a></li>
+                            <li class="@Html.IsSelected(action: "Index", controller: "Node") @Html.IsSelected(action:"Create", controller:"Node") @Html.IsSelected(action:"Edit", controller:"Node")"><a href="@Url.Action("Index", "Node")"><i class="fa fa-circle-o"></i>@Resources.Language.Node</a></li>
+                            <li class="@Html.IsSelected(action: "Index", controller: "EventDef") @Html.IsSelected(action:"Create",controller:"EventDef") @Html.IsSelected(action:"Edit",controller:"EventDef")"><a href="@Url.Action("Index", "EventDef")"><i class="fa fa-circle-o"></i>@Resources.Language.EventDef</a></li>
+                            <li class="@Html.IsSelected(action: "Index", controller: "Department")"><a href="@Url.Action("Index", "Department")"><i class="fa fa-circle-o"></i>@Resources.Language.Department</a></li>
+                            <li class="@Html.IsSelected(action: "Index", controller: "Employee") @Html.IsSelected(action:"Create", controller:"Employee") @Html.IsSelected(action:"Edit", controller:"Employee")"><a href="@Url.Action("Index", "Employee")"><i class="fa fa-circle-o"></i>Nhân viên</a></li>
+                        </ul>
+                    </li>
+
+                }
+                if (Common.UserFunction.USER_AVADMIN_STAFF(session.Role))
+                {
+                    <li class="@Html.IsSelected(controller: "User") @Html.IsSelected(controller: "Groups") @Html.IsSelected(controller:"Permission")
+
+                               treeview">
+                        <a href="@Url.Action("Index", "User")">
+                            <i class="fa fa-users"></i> <span>@Resources.Language.MenuConfigSystem</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-chevron-down pull-right"></i>
+                            </span>
+                        </a>
+
+                        <ul class="treeview-menu">
+                            <li class="@Html.IsSelected(action: "Index", controller: "User") @Html.IsSelected(action:"Edit", controller:"User") @Html.IsSelected(action:"Create",controller:"User")"><a href="@Url.Action("Index", "User")"><i class="fa fa-circle-o"></i>@Resources.Language.MenuUser</a></li>
+                            <li class="@Html.IsSelected(action:"Index", controller: "Groups") @Html.IsSelected(action:"Create", controller:"Groups") @Html.IsSelected(action:"Edit", controller:"Groups") @Html.IsSelected(action:"Index",controller:"Permission")"><a href="@Url.Action("Index", "Groups")"><i class="fa fa-circle-o"></i>@Resources.Language.MenuGroup</a></li>
+                        </ul>
+                    </li>
+                }
+
+            }
+        </ul>
+    </section>
+</aside>

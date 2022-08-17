@@ -1,0 +1,175 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Model.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="NextWayConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=NextWay;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=NextWay;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="NextWayConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=NextWay;Persist Security Info=True;User ID=sa;Password=admin@123&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=NextWay;Persist Security Info=True;User ID=sa;Password=admin@123</Value>
+    </Setting>
+    <Setting Name="NextWayConnectionString2" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=NextWay;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=NextWay;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="SVAWConStr" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;data source=.;initial catalog=avSVAW;persist security info=True;user id=sa;password=159753;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">data source=.;initial catalog=avSVAW;persist security info=True;user id=sa;password=159753;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="SVAWConStr1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=data source=.;initial catalog=avSVAW;persist security info=True;user id=sa;password=159753&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=data source=.;initial catalog=avSVAW;persist security info=True;user id=sa;password=159753</Value>
+    </Setting>
+    <Setting Name="SVAWConStr2" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=data source=.;initial catalog=avSVAW;persist security info=True;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=data source=.;initial catalog=avSVAW;persist security info=True;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="SVAW_BKConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=SVAW_BK;Persist Security Info=True;User ID=sa;Password=159753;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=SVAW_BK;Persist Security Info=True;User ID=sa;Password=159753;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="avSVAWConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=avSVAW;Persist Security Info=True;User ID=sa;Password=123456;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=avSVAW;Persist Security Info=True;User ID=sa;Password=123456;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="avSVAWConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="avAndonAristonConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.\SQLEXPRESS;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.\SQLEXPRESS;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="avAndonAristonConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.\SQLEXPRESS;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.\SQLEXPRESS;Initial Catalog=avAndonAriston;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="avAndonConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-E9CFLMM\SQLEXPRESS;Initial Catalog=avAndon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-E9CFLMM\SQLEXPRESS;Initial Catalog=avAndon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-E9CFLMM\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-E9CFLMM\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=.\SQL_EN;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=.\SQL_EN;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString2" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=192.168.1.254;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=192.168.1.254;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=admin@123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString3" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-T363Q3B\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-T363Q3B\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString4" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-G3LMUCK\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-G3LMUCK\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString5" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=ADMIN-PC\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=ADMIN-PC\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Andon_MES_KGRConnectionString" Type="(Connection string)" Scope="Application">
+    <Setting Name="Avani_AndonConnectionString6" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-EJD21OS\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-H4N9TFU\SQLEXPRESS;Initial Catalog=Andon.MES.KGR;Integrated Security=True</Value>
+      <Value Profile="(Default)">Data Source=DESKTOP-EJD21OS\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+    <Setting Name="Avani_AndonConnectionString7" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DESKTOP-UT3VJ3N\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DESKTOP-UT3VJ3N\SQLEXPRESS;Initial Catalog=Avani.Andon;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    <Setting Name="MES_KGRConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=localhost,1444\MES;Initial Catalog=MES.KGR;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=localhost,1444\MES;Initial Catalog=MES.KGR;Persist Security Info=True;User ID=sa;Password=123;MultipleActiveResultSets=True;Application Name=EntityFramework</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

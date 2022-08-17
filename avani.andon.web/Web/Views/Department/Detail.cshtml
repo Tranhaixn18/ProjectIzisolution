@@ -1,0 +1,68 @@
+﻿
+@model List<Model.DataModel.tblEmployee>
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-xs-12">
+        <div style="margin-bottom:5px;">
+            <p style="font-size: 24px; font-weight: 500;"> Phòng ban:@ViewBag.TenPhong</p>
+        </div>
+        <div class="box">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                <table id="ProductTable" class="table table-bordered table-striped" style="text-align:center;">
+                    <thead>
+                        <tr style="text-align:center;">
+                            <th style="text-align:center;">#</th>
+                            <th style="text-align:center;">@Resources.Language.Name</th>
+                            <th style="text-align:center;">Tiêu đề</th>
+                            <th style="text-align:center;">@Resources.Language.Email</th>
+                            <th style="text-align:center;">@Resources.Language.Phone</th>
+                            <th style="text-align:center;">@Resources.Language.Description</th>
+
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @i
+                                    </td>
+                                    <td>@f.Name</td>
+                                    <td>@f.Title</td>
+                                    <td>
+                                        @f.Email
+                                    </td>
+
+                                    <td>@f.Phone </td>
+                                    <td>@f.Description </td>
+
+
+
+                                </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+                <div class="col-sm-2" style="margin-top: 10px;float:right;" >
+
+                    <a href="/Department/Index">
+                        <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</div>

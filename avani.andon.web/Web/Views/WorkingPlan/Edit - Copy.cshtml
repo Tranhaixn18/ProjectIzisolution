@@ -1,0 +1,602 @@
+﻿@{
+    ViewBag.Title = Resources.Language.WorkingPlan;
+    ViewBag.SubTitle = Resources.Language.Edit + " " + ViewBag.Title;
+       int ic=0,sh=0,sm=0,eh=0,em=0;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 18px;
+            width: 18px;
+            /*background-color: #eee;*/
+        }
+
+        .av-checkbox-all {
+            height: 18px;
+            width: 18px;
+            background-color: bisque;
+        }
+        /* The container */
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            /* Hide the browser's default checkbox */
+            .container input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: bisque;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+       
+    </style>
+}
+
+<script>
+  
+        function SaveWorkingPlan() {
+
+          
+          
+
+            var strShifts = "";
+            $("input[id^='Shift_']").each(function () {
+                var _value = this.checked;
+                if (_value) {
+                    var _id = $(this).attr('id').split('_')[1];
+                    strShifts += _id +';';
+                }
+            });
+
+            var strDays = "";
+            $("input[id^='Day_']").each(function () {
+                var _value = this.checked;
+                if (_value) {
+                    var _id = $(this).attr('id').split('_')[1];
+                    strDays += _id +';';
+                }
+            });
+           var strLines = "";
+            $("input[id^='Line_']").each(function () {
+                var _value = this.checked;
+                if (_value) {
+                    var _id = $(this).attr('id').split('_')[1];
+                    strLines += _id +';';
+                }
+            });
+             var _headcount = $("#HeadCount").val();
+            var _takttime = $("#TaktTime").val();
+            var _quality = $("#Quality").val();
+            if (strShifts == '' || strDays == '' || strLines == '' ||_takttime =='') {
+                alert("@Resources.Language.RequireWorkingPlan");
+                return;
+            }
+            //alert(strRet);
+            var _id = $("#Id").val();
+            var _year = $("#Year").val();
+            var _month = $("#Month").val();
+           
+
+            if (_year == '' || _month == '') {
+                alert("@Resources.Language.RequireYearAndMonth");
+                return;
+            }
+            var StartHour = $("#StartHour").val();
+            var B1StartHour = $("#B1StartHour").val();
+            var B2StartHour = $("#B2StartHour").val();
+            var B3StartHour = $("#B3StartHour").val();
+             var StartMinute = $("#StartMinute").val();
+            var B1StartMinute = $("#B1StartMinute").val();
+            var B2StartMinute = $("#B2StartMinute").val();
+            var B3StartMinute = $("#B3StartMinute").val();
+
+            var FinishHour = $("#FinishHour").val();
+            var B1FinishHour = $("#B1FinishHour").val();
+            var B2FinishHour = $("#B2FinishHour").val();
+            var B3FinishHour = $("#B3FinishHour").val();
+             var FinishMinute = $("#FinishMinute").val();
+            var B1FinishMinute = $("#B1FinishMinute").val();
+            var B2FinishMinute = $("#B2FinishMinute").val();
+            var B3FinishMinute = $("#B3FinishMinute").val();
+           // if (StartHour == "") { $("#StartHour").attr('style', 'border:1px solid red;'); return;}
+
+            $.ajax({
+                url: "/WorkingPlan/InserOrUpdateWorkingPlan",
+                data: {
+                    Id: _id,
+                    Year: _year,
+                    Month: _month,
+                    Shifts: strShifts,
+                    Days: strDays,
+                    Lines: strLines,
+                    headcount: _headcount,
+                    takttime: _takttime,
+                    quality: _quality,
+                    StartHour: StartHour,
+                    B1StartHour: B1StartHour,
+                    B2StartHour: B2StartHour,
+                    B3StartHour: B3StartHour,
+                     StartMinute: StartMinute,
+                    B1StartMinute: B1StartMinute,
+                    B2StartMinute: B2StartMinute,
+                    B3StartMinute: B3StartMinute,
+                    FinishHour: FinishHour,
+                    B1FinishHour: B1FinishHour,
+                    B2FinishHour: B2FinishHour,
+                    B3FinishHour: B3FinishHour,
+                     FinishMinute: FinishMinute,
+                    B1FinishMinute: B1FinishMinute,
+                    B2FinishMinute: B2FinishMinute,
+                    B3FinishMinute: B3FinishMinute
+                },
+                type: "POST",
+                beforeSend: function () {
+                    $('#loading').show();
+                      $("#Save").attr("disabled", true);
+                },
+                success: function (result) {
+                    window.location.replace("/WorkingPlan/Index");
+                },
+                error: function (errormessage) {
+                    console.log("error", errormessage);
+                    alert("Có lỗi");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });
+
+
+        }
+
+
+
+    $(document).ready(function () {
+                    //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+
+         $(".rdoWorkingShift").on("click", function () {
+                var sh = $(this).attr('data-sh');
+                var sm = $(this).attr('data-sm');
+                var eh = $(this).attr('data-eh');
+                var em = $(this).attr('data-em');
+                $("#StartHour").val(sh);
+                $("#StartMinute").val(sm);
+                $("#FinishHour").val(eh);
+             $("#FinishMinute").val(em);
+             
+            });
+
+            $(".rdoBeakTime").on("click", function () {
+                var sh = $(this).attr('data-sh');
+                var sm = $(this).attr('data-sm');
+                var eh = $(this).attr('data-eh');
+                var em = $(this).attr('data-em');
+                $("#B1StartHour").val(sh);
+                $("#B1StartMinute").val(sm);
+                $("#B1FinishHour").val(eh);
+                $("#B1FinishMinute").val(em);
+                //if ($(this).val() == "0") {
+                //    $(".view-breakTime").hide();
+                //} else {
+                //    $(".view-breakTime").show();
+                //}
+            });
+            //Check ngày
+            $("#CheckDayAll").on('ifChanged', function (event) {
+                var _value = this.checked;
+                //alert(_value);
+                $("input[id^='Day_']").each(function () {
+                    if (_value) {
+                        $(this).iCheck('check');
+                    }
+                    else {
+                        $(this).iCheck('uncheck');
+                    }
+                });
+
+            });
+
+            
+
+
+            $("#CustomerId").select2({
+            });
+            $("#ProviderId").select2({
+            });
+
+            $("#Year").on("change", function () {
+                var month = $("#Month").val();
+                var year = $(this).val();
+                if (year != "" && month != "") {
+                    window.location.href = "/WorkingPlan/Edit/" + $("#Id").val() +"?Year=" + year + "&month=" + month;
+                }
+            });
+            $("#Month").on("change", function () {
+                var month = $(this).val();
+                var year = $("#Year").val();
+                if (year != "" && month != "") {
+                    window.location.href = "/WorkingPlan/Edit/" + $("#Id").val()+"?Year=" + year + "&month=" + month;
+                }
+            });
+        })
+</script>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Edit", "WorkingPlan", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+            <div class="box-body">
+
+                <input id="Id" name="Id" type="hidden" value="@ViewBag.WorkingId" class="form-control"></input>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.Year</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="Year" class="form-control col-md-7 col-xs-12">
+                            @{
+                                var strSelect = "";
+
+                                for (int i = 0; i < ViewBag.Years.Count; i++)
+                                {
+                                    if (ViewBag.Months[i].Value == ViewBag.Year.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+
+                                    <option value="@ViewBag.Years[i].Value" @strSelect>@ViewBag.Years[i].Text</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.Month</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="Month" class="form-control col-md-7 col-xs-12">
+                            @{
+
+
+                                for (int i = 1; i < ViewBag.Months.Count; i++)
+                                {
+                                    if (ViewBag.Months[i].Value == ViewBag.Month.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <option value="@ViewBag.Months[i].Value" @strSelect>@ViewBag.Months[i].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.WorkingShift</label>
+                    </div>
+                    <div class="col-sm-10">
+                        @foreach (var shift in ViewBag.Shifts)
+                        {
+
+                            if (ViewBag.WorkingPlanShifs.Contains("; " + shift.Id + ";"))
+                            {
+                                strSelect = " checked='checked' ";
+                            }
+                            else
+                            {
+                                strSelect = "";
+                            }
+                            if (ic == 0)
+                            {
+                                sh = shift.StartHour;
+                                sm = shift.StartMinute;
+                                eh = shift.FinishHour;
+                                em = shift.FinishMinute;
+                                <div class="col-sm-3">
+                                    <input name="rdowf" type="radio" class="av-checkbox rdoWorkingShift" checked="checked" id="Shift_@shift.Id" data-sh="@shift.StartHour.ToString("00")" data-sm="@shift.StartMinute.ToString("00")"
+                                           data-eh="@shift.FinishHour.ToString("00")" data-em="@shift.FinishMinute.ToString("00")" />
+                                    <span>@shift.Name (@shift.TotalMinute p) [@shift.StartHour.ToString("00"):@shift.StartMinute.ToString("00") - @shift.FinishHour.ToString("00"):@shift.FinishMinute.ToString("00")]</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-sm-3">
+                                    <input name="rdowf" type="radio" class="av-checkbox rdoWorkingShift" id="Shift_@shift.Id" data-sh="@shift.StartHour.ToString("00")" data-sm="@shift.StartMinute.ToString("00")"
+                                           data-eh="@shift.FinishHour.ToString("00")" data-em="@shift.FinishMinute.ToString("00")" />
+                                    <span>@shift.Name (@shift.TotalMinute p) [@shift.StartHour.ToString("00"):@shift.StartMinute.ToString("00") - @shift.FinishHour.ToString("00"):@shift.FinishMinute.ToString("00")]</span>
+                                </div>
+                            }
+
+                            ic++;
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label required">@Resources.Language.Start</label>
+
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="StartHour" class="form-control col-md-7 col-xs-12" name="StartHour" value="@ViewBag.StartHour" />
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="StartMinute" class="form-control col-md-7 col-xs-12" name="StartMinute"  value="@ViewBag.StartMinute" />
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="control-label required">@Resources.Language.Finish</label>
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="FinishHour" class="form-control col-md-7 col-xs-12" name="FinishHour"  value="@ViewBag.FinishHour" />
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="FinishMinute" class="form-control col-md-7 col-xs-12" name="FinishMinute"  value="@ViewBag.FinishMinute" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.Day</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="CheckDayAll" class="minimal">
+                            </div>
+
+                            <div class="col-sm-11">
+                                @for (var i = 1; i <= ViewBag.Days; i++)
+                                {
+                                    if (ViewBag.WorkingPlanDays.Contains("; " + i.ToString() + ";"))
+                                    {
+                                        strSelect = " checked='checked' ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <div class="col-sm-1">
+                                        <input type="checkbox" @strSelect class="av-checkbox" id="Day_@i" />
+                                        <span>@i</span>
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.ApplyTo</label>
+                    </div>
+
+                    <div class="col-sm-10">
+
+                        <div class="form-group">
+                            <div class="col-sm-11">
+                                @foreach (var line in ViewBag.Lines)
+                                {
+                                    if (ViewBag.WorkingPlanLines.Contains("; " + line.Id.ToString() + ";"))
+                                    {
+                                        strSelect = " checked='checked' ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+
+
+                                    <div class="col-sm-1">
+                                        <input type="checkbox" class="av-checkbox" @strSelect id="Line_@line.Id" />
+                                        <span>@line.Name</span>
+                                    </div>
+
+
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label required">@Resources.Language.TaktTime</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control col-md-7 col-xs-12" id="TaktTime" name="TaktTime" value="@ViewBag.TaktTime" />
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="control-label required">@Resources.Language.Headcount</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control col-md-7 col-xs-12" id="HeadCount" name="HeadCount" value="@ViewBag.HeadCount" />
+                    </div>
+
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <label class="control-label required">@Resources.Language.Quality</label>
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" class="form-control col-md-7 col-xs-12" id="Quality" name="Quality" value="@ViewBag.Quality" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.BreakTime</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="col-sm-3">
+                            <input type="radio" checked="checked" name="rdobTime" data-sh="0" data-sm="0" data-eh="0" data-em="0" class="av-checkbox rdoBeakTime" id="BreakTime_0" value="0" />
+                            <span>@Resources.Language.None</span>
+                        </div>
+                        @foreach (var btime in ViewBag.BreakTimes)
+                        {
+                            <div class="col-sm-3">
+                                <input type="radio" name="rdobTime" class="av-checkbox rdoBeakTime" value="@btime.Id" id="BreakTime_@btime.Id" data-sh="@btime.StartHour.ToString("00")"
+                                       data-sm="@btime.StartMinute.ToString("00")" data-eh="@btime.FinishHour.ToString("00")" data-em="@btime.FinishMinute.ToString("00")" />
+                                <span>@btime.Name (@btime.TotalMinute p) [@btime.StartHour.ToString("00"):@btime.StartMinute.ToString("00") - @btime.FinishHour.ToString("00"):@btime.FinishMinute.ToString("00")]</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="view-breakTime">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B1StartHour" class="form-control col-md-7 col-xs-12" name="B1StartHour"  value="@ViewBag.B1StartHour"  />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B1StartMinute" class="form-control col-md-7 col-xs-12" name="B1StartMinute" value="@ViewBag.B1StartMinute" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B1FinishHour" class="form-control col-md-7 col-xs-12" name="B1FinishHour" value="@ViewBag.B1FinishHour"  />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B1FinishMinute" class="form-control col-md-7 col-xs-12" name="B1FinishMinute" value="@ViewBag.B1FinishMinute"  />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B2StartHour" class="form-control col-md-7 col-xs-12" name="B2StartHour"  value="@ViewBag.B2StartHour" />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B2StartMinute" class="form-control col-md-7 col-xs-12" name="B2StartMinute" value="@ViewBag.B2StartMinute"  />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B2FinishHour" class="form-control col-md-7 col-xs-12" name="B2FinishHour" value="@ViewBag.B2FinishHour"  />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B2FinishMinute" class="form-control col-md-7 col-xs-12" name="B2FinishMinute" value="@ViewBag.B2FinishMinute"  />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B3StartHour" class="form-control col-md-7 col-xs-12" name="B3StartHour" value="@ViewBag.B3StartHour"  />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B3StartMinute" class="form-control col-md-7 col-xs-12" name="B3StartMinute" value="@ViewBag.B3StartMinute"  />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B3FinishHour" class="form-control col-md-7 col-xs-12" name="B3FinishHour" value="@ViewBag.B3FinishHour"  />
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <input type="text" id="B3FinishMinute" class="form-control col-md-7 col-xs-12" name="B3FinishMinute" value="@ViewBag.B3FinishMinute"  />
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="col-sm-1">
+                        <button type="button" id="Save" onclick="SaveWorkingPlan()" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;Ghi lại&nbsp;</button>
+                    </div>
+
+                    @*<button type="button" onclick="SaveWorkingPlan()" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;Ghi lại&nbsp;</button>*@
+                    <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+                }
+
+            </div>
+
+    </div>
+</div>

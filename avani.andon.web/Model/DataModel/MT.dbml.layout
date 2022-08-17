@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 21, 25.75" name="NextWay">
+  <DataContextMoniker Name="/AvaniDataContext" />
+  <nestedChildShapes>
+    <elementListCompartment Id="194da5c0-66ec-47a6-a7b7-ac383785c37a" absoluteBounds="18.765, 18.21, 1.6644444477558138, 0.2693896484375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+    <classShape Id="05e81c32-895a-45ca-8098-c860a621f200" absoluteBounds="0.75, 0.75, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/AvaniDataContext/tblBreakTime" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d176c71f-fefb-47c5-90ab-badb3c68bfb6" absoluteBounds="0.765, 1.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="26adead2-b79a-47f2-a1ab-411822c97848" absoluteBounds="3.75, 0.75, 2, 1.9631982421875">
+      <DataClassMoniker Name="/AvaniDataContext/tblZone" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bd5e7bd6-f155-4c4a-b451-984ffbe02fee" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="24c393ad-400f-4118-8ef9-1292f06b82c2" absoluteBounds="3.75, 3.75, 2, 3.1170068359375005">
+      <DataClassMoniker Name="/AvaniDataContext/tblCustomer" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c1067b5d-878e-4192-bcb3-4bffefab267c" absoluteBounds="3.765, 4.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="053aa05b-35cd-4cb2-837f-dc5a7d9f7ae0" absoluteBounds="6.75, 0.75, 2, 1.9631982421875003">
+      <DataClassMoniker Name="/AvaniDataContext/tblDepartment" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7ff9d7fb-498c-47f0-b371-b3c83637eaa8" absoluteBounds="6.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1f77bbca-4ecf-4ff7-8e05-c5a1ec5d3a9b" absoluteBounds="6.75, 3.75, 2, 3.1170068359375005">
+      <DataClassMoniker Name="/AvaniDataContext/tblEmployee" />
+      <nestedChildShapes>
+        <elementListCompartment Id="deee0568-1870-40be-9bbb-d41b6f490e0a" absoluteBounds="6.765, 4.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="966279e2-4bd9-4cfa-ae88-7e85e2b60869" absoluteBounds="0.75, 7.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblEvent" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b6eae5ac-5fcf-4ea9-b9e8-7d0e295ceac9" absoluteBounds="0.765, 8.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="91e164a4-36c4-4a26-90d4-5919d5609879" absoluteBounds="3.75, 7.75, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/AvaniDataContext/tblEventDef" />
+      <nestedChildShapes>
+        <elementListCompartment Id="068564da-568e-4d67-b48a-55f3e1cfdb7b" absoluteBounds="3.765, 8.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9863444e-73c1-437e-ba23-cf8ac66ba2b5" absoluteBounds="6.75, 7.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblEventReason" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8eb66cee-cf50-4e9e-9d60-efcce23e8ce9" absoluteBounds="6.765, 8.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7987d6ec-5402-4a8d-b4f9-268294c52a94" absoluteBounds="9.75, 0.75, 2, 1.9631982421875003">
+      <DataClassMoniker Name="/AvaniDataContext/tblFactory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b37c1c8b-5619-4a4e-9cac-ef235ad66313" absoluteBounds="9.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4009c71e-5a36-4d7f-beb2-9e5dabebc162" absoluteBounds="9.75, 3.75, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/AvaniDataContext/tblHRAttendance" />
+      <nestedChildShapes>
+        <elementListCompartment Id="21424432-2090-417d-8acd-59e4f93244dc" absoluteBounds="9.765, 4.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0b7f10f1-3258-4eee-bf47-8bfac2a08c20" absoluteBounds="9.75, 6.75, 2, 3.1170068359375014">
+      <DataClassMoniker Name="/AvaniDataContext/tblLine" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9df81f05-b5f9-48ae-afda-7ca17daaf340" absoluteBounds="9.765, 7.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="14656265-5755-43ef-a669-b94a5be48311" absoluteBounds="6.75, 10.75, 2, 1.9631982421874987">
+      <DataClassMoniker Name="/AvaniDataContext/tblLineSchedule" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1f03b2a0-bbf6-479b-80d1-812226712a15" absoluteBounds="6.765, 11.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="02f761a0-3ca7-4193-a3e9-06212f60866f" absoluteBounds="9.75, 10.75, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/AvaniDataContext/tblMenu" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2e87a66a-f875-4987-a9a2-9921d062725c" absoluteBounds="9.765, 11.21, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="07208b0b-693b-4d89-ab21-4263f2a02367" absoluteBounds="0.75, 11.75, 2, 2.3478011067708344">
+      <DataClassMoniker Name="/AvaniDataContext/tblNode" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3ec3b212-af77-43be-ab09-03b0e304bee9" absoluteBounds="0.765, 12.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9c463f8b-6ff2-4ba4-b7ee-25fa4b55bc8b" absoluteBounds="12.75, 0.75, 2, 4.8477197265624987">
+      <DataClassMoniker Name="/AvaniDataContext/tblNodeOperationReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="294d1d78-5e11-49c1-8e79-df71ec587bf3" absoluteBounds="12.765, 1.21, 1.9700000000000002, 4.2877197265625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4679ff42-f8b0-46ea-9b64-2567294d57c0" absoluteBounds="12.75, 6.75, 2, 3.5016097005208318">
+      <DataClassMoniker Name="/AvaniDataContext/tblNodeSummaryEventReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="36c72152-2b12-463b-a462-b556257e93f6" absoluteBounds="12.765, 7.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="59bb245e-0a57-4b36-af0c-c14629eead3d" absoluteBounds="12.75, 11.75, 2, 5.0400211588541666">
+      <DataClassMoniker Name="/AvaniDataContext/tblProduct" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c3883613-adc2-4d8a-8a95-ab7b271bedd7" absoluteBounds="12.765, 12.21, 1.9700000000000002, 4.4800211588541661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="70eeb747-e51f-4e20-b8b5-18c2e0442963" absoluteBounds="3.75, 13.75, 2, 1.3862939453124987">
+      <DataClassMoniker Name="/AvaniDataContext/tblProductCategory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2f587b94-5e3b-40f2-bc2d-fe0c2a54facf" absoluteBounds="3.765, 14.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4a0aa92a-83b4-4075-a93f-4f4919e9935a" absoluteBounds="15.75, 0.75, 2, 1.3862939453125003">
+      <DataClassMoniker Name="/AvaniDataContext/tblProductType" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9ff8e06f-fdfb-4250-891a-66f651baa492" absoluteBounds="15.765, 1.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0066705d-e892-497b-b5f8-103da7d6c273" absoluteBounds="15.75, 3.75, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/AvaniDataContext/tblSchedule" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2900a208-69b6-436b-9d36-f526e939efa2" absoluteBounds="15.765, 4.21, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="700a71b8-2981-411e-9f4f-5a460718ceaa" absoluteBounds="6.75, 15.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblShift" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ecfdf75d-efb3-47cb-b43c-092b93ae783f" absoluteBounds="6.765, 16.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9dd69335-48f9-4d76-93c0-5e6762db1f24" absoluteBounds="15.75, 8.75, 2, 3.5016097005208309">
+      <DataClassMoniker Name="/AvaniDataContext/tblUser" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dac23d93-8a9e-48d9-96a8-c41898e242df" absoluteBounds="15.765, 9.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="581c0ae7-6000-4806-a390-2eda48ab9868" absoluteBounds="15.75, 13.75, 2, 2.5401025390625005">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserAudit" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6b9d7827-c103-485f-9794-db17e3a0652c" absoluteBounds="15.765, 14.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f05cac41-d2cc-4b12-918f-219ebe2f4ed9" absoluteBounds="0.75, 16.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserGroup" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3489efef-9d7f-4ade-89df-08c5240ba690" absoluteBounds="0.765, 17.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f24c5ce6-a8b3-4f92-9989-0ba1d1ca3e98" absoluteBounds="9.75, 17.75, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserLogged" />
+      <nestedChildShapes>
+        <elementListCompartment Id="315261af-6998-40f3-a9cd-2b77b549536a" absoluteBounds="9.765, 18.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="111f01a7-3707-41e1-a756-da1c2abebd14" absoluteBounds="12.75, 17.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserLogin" />
+      <nestedChildShapes>
+        <elementListCompartment Id="879b5855-0b1c-4622-9d37-cb9c840f256a" absoluteBounds="12.765, 18.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="35710d4d-a7d4-4106-9a56-64422fdb2c60" absoluteBounds="15.75, 17.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserPermission" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7b4fe527-651a-4cfb-bb2f-6af0d152a1a0" absoluteBounds="15.765, 18.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b9754301-466a-4163-a20e-8874f659244a" absoluteBounds="18.75, 0.75, 2, 1.7708968098958329">
+      <DataClassMoniker Name="/AvaniDataContext/tblUserRole" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a878f233-d7c4-4399-a0d8-474affd1b98f" absoluteBounds="18.765, 1.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="704740b9-2b1b-4194-891d-2c444e7ba1b1" absoluteBounds="18.75, 3.75, 2, 5.2323225911458318">
+      <DataClassMoniker Name="/AvaniDataContext/tblWorkOrder" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0e8a4c58-0c57-4841-9fb1-e27c16c8940a" absoluteBounds="18.765, 4.21, 1.9700000000000002, 4.672322591145833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d19f6d12-bff8-4f02-91a5-e8da756750ae" absoluteBounds="3.75, 18.75, 2, 6.7707340494791666">
+      <DataClassMoniker Name="/AvaniDataContext/tblWorkOrderPlan" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e8b64633-c47b-4964-9209-d5ed14933dd9" absoluteBounds="3.765, 19.21, 1.9700000000000002, 6.2107340494791661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="18d4aa1d-d857-439d-ae78-69021f8f8c0a" absoluteBounds="18.75, 9.75, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/AvaniDataContext/tblWorkOrderPlanNode" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bb45dbce-41fc-4a51-8b22-b8b179ae24ab" absoluteBounds="18.765, 10.21, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="150dad95-492c-4278-8ac6-82c6b13fcf4a" absoluteBounds="18.75, 19.75, 2, 5.2323225911458309">
+      <DataClassMoniker Name="/AvaniDataContext/tblWorkPlan" />
+      <nestedChildShapes>
+        <elementListCompartment Id="faa2806b-f075-4721-8231-c9c4ab7ae42a" absoluteBounds="18.765, 20.21, 1.9700000000000002, 4.672322591145833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e1325987-cbe9-4334-8970-8725c1ab1f6f" absoluteBounds="18.75, 14.75, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/AvaniDataContext/tblWorkPlanBreak" />
+      <nestedChildShapes>
+        <elementListCompartment Id="20a803b1-5002-49a1-b460-f0149d617ba8" absoluteBounds="18.765, 15.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

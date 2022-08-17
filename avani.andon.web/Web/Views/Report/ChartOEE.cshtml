@@ -1,0 +1,526 @@
+﻿
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " OEE";
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script src="~/assets/js/Chart.min.js"></script>
+
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: #ccc9c9;
+    }
+
+    .box-header {
+        padding: 0px !important;
+    }
+
+    #ChartContainer {
+        color: #012060;
+    }
+
+    .content {
+        background: #FFF !important;
+        min-height: 600px;
+    }
+
+    .new-view {
+        background: #FFF;
+        padding: 30px;
+    }
+
+    h1.title {
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        color: #021d5e;
+    }
+
+    .oee {
+        font-size: 50px;
+        line-height: 210px;
+    }
+
+    .chart-1 {
+        width: 70%;
+        height: 220px;
+        text-align: center;
+        margin: auto;
+    }
+
+    .chart-2 {
+        width: 60%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .text-center {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .sr-only-1 {
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        font-size: 55px;
+        color: #262421;
+        font-weight: bold;
+    }
+
+    .label-text {
+        text-align: center;
+        color: #4c49b3;
+        font-size: 20px;
+    }
+
+        .label-text span {
+            font-weight: bold;
+        }
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("ChartOEE", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label">@Resources.Language.Day</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StrDate" name="StrDate" data-format="yyyy/MM/dd" value="@ViewBag.StrDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Common.UserFunction.USER_LINE_LEADER(session.Role))
+                        {
+                            <input type="hidden" name="LineId" id="LineId" value="@session.LineId" />
+                        }
+                        else
+                        {
+                            @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                        }
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="button" onclick="CreateChartOEE()" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            &nbsp;
+                            &nbsp;
+                            @*<button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel</button>
+                                &nbsp;
+                                &nbsp;*@
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="example" style="display:none;">
+
+</div>
+<div class="row">
+    <div class="col-sm-12" id="ChartContainer" style="display:none;">
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            getPlugin();
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+
+        function CreateChartOEE() {
+            var StrDate = $("#StrDate").val();
+            var LineId = $("#LineId").val();
+            $("#ChartContainer").show();
+              $("#ChartContainer").html('');
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetChartOEE?StrDate=' + StrDate + '&LineId=' + LineId,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                         var obj = data[i];
+                        var j = i + 1;
+						//alert(obj.StopDuration);
+
+                        var hours = Math.round( obj.StopDuration / 60);
+                        var minute = Math.round(obj.StopDuration % 60);
+                        hours = Number(hours) < 10 ? "0" + hours : hours;
+                        minute = Number(minute) < 10 ? "0" + minute : minute;
+                        var stopduration = hours + ":" + minute;
+                        var xh = '<div class="row box-header with-border" style="font-size:50px;">' +
+                             '<div class="col-md-1">'+j+'</div>'+
+                             '<div class="col-md-10">['+obj.StartHour+':'+obj.StartMinute+' - '+obj.FinishHour+':'+obj.FinishMinute+']</div>'+
+                                '</div > <br/>';
+                         xh += '<div class="row">'+
+                                    '<div class="col-md-4">'+
+                                        '<div class="row text-center">'+
+                                            '<div class="col-md-9">'+
+                                                '<div class="">OEE</div>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<div class="row">'+
+                                         '   <div class="col-md-9" style="text-align:center;">'+
+                                          '      <div class="chart-1">'+
+                                          '          <canvas id="pieChart1_'+obj.Id+'" height="100%" width="120"></canvas>'+
+                                           '     </div>'+
+                                          '  </div>'+
+                                       ' </div>'+
+                                  '  </div>'+
+                                   ' <div class="col-md-8">'+
+                                      '  <div class="row">'+
+                                      '      <div class="col-md-4 ">'+
+										'       <div class="col-sm-12 text-center">Avaibility</div>'+
+										'       <div class="col-sm-12">'+
+                                      '          <div class="chart-2"><canvas id="pieChart2_'+obj.Id+'" height="50" width="50"></canvas></div>'+
+										'       </div>'+
+                                       '     </div>'+
+                                       '     <div class="col-md-4 ">'+
+										'       <div class="col-sm-12 text-center">Performance</div>'+
+										'       <div class="col-sm-12">'+
+                                       '         <div class="chart-2"><canvas id="pieChart3_'+obj.Id+'" height="50" width="50"></canvas></div>'+
+										'       </div>'+
+                                       '     </div>'+
+                                       '     <div class="col-md-4 ">'+
+										'       <div class="col-sm-12 text-center">Quality</div>'+
+										'       <div class="col-sm-12">'+
+                                       '         <div class="chart-2"><canvas id="pieChart4_'+obj.Id+'" height="50" width="50"></canvas></div>'+
+										'       </div>'+
+                                       '     </div>'+
+                                       ' </div>'+
+                             '</div><div style="clear:both"></div>' +
+                            '<div class="description" style="margin-top: 32px;font-size: 25px;">'+
+                                '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Plan Start Time:</div><div class="col-md-3" style="text-align:left;">'+obj.StartHour+':'+ obj.StartMinute +' </div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Plan Stop Time:</div><div class="col-md-3" style="text-align:left;">'+obj.FinishHour+':'+ obj.FinishMinute +'</div>' +
+                             ' </div>' +
+                              '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Actual Start Time:</div><div class="col-md-3" style="text-align:left;">'+obj.StartTime +' </div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Actual Stop Time:</div><div class="col-md-3" style="text-align:left;">'+obj.StopTime+'</div>' +
+                             ' </div>' +
+                              '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Number of Stop:</div><div class="col-md-3" style="text-align:left;">'+obj.NumberOfStop+'</div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Stop duration:</div><div class="col-md-3" style="text-align:left;">'+stopduration+'</div>' +
+                             ' </div>' +
+                              '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Plan:</div><div class="col-md-3" style="text-align:left;">'+obj.Plan+'</div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Quality:</div><div class="col-md-3" style="text-align:left;">'+obj.Quality+'%</div>' +
+                             ' </div>' +
+                             '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Target:</div><div class="col-md-3" style="text-align:left;">'+obj.Target+'</div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Actual:</div><div class="col-md-3" style="text-align:left;">'+obj.Actual+'</div>' +
+                             ' </div>' +
+                             '<div class="row">' +
+                                    '<div class="col-md-3"  style="text-align:right;">Takt time:</div><div class="col-md-3" style="text-align:left;">'+obj.TakeTime+'</div>' +
+                                    '<div class="col-md-3"  style="text-align:right;">Head count:</div><div class="col-md-3" style="text-align:left;">'+obj.HeadCount+'</div>' +
+                                ' </div>' +
+                            '</div > '+
+
+                            '</div>';
+
+                        $("#ChartContainer").append(xh);
+
+
+                        var Avaibilitys = [];
+                        var Performances = [];
+                        var Qualitys = [];
+                        var OEEs = [];
+
+                        // for (var i = 0; i < data.length; i++) {
+                        //   var obj = data;
+
+						var Avaibility = Number(obj.Avaibility) > 100 ? 100 : obj.Avaibility;
+						 Avaibility = Number(obj.Avaibility) < 0 ? 0 : Avaibility.toFixed(0);
+
+                        Avaibilitys.push(Avaibility);
+
+                        Avaibilitys.push(100 - Avaibility);
+
+						var Performance = Number(obj.Performance) > 100 ? 100 : obj.Performance;
+						 Performance = Number(obj.Performance) < 0 ? 0 : Performance.toFixed(0);
+                        Performances.push(Performance);
+                        Performances.push(100 - Performance);
+
+						var Quality = Number(obj.Quality) > 100 ? 100 : obj.Quality;
+						Quality = Number(obj.Quality) < 0 ? 0 : Quality.toFixed(0);
+
+                        Qualitys.push(Quality);
+
+                        Qualitys.push(100 - Quality);
+
+						//var Oee1 = Number(obj.OEE) > 100 ? 100 : obj.OEE;
+						  var Oee1 = Avaibility * Performance * Quality / 10000;
+						Oee1 = Number(obj.OEE) < 0 ? 0 : Oee1;
+                        OEEs.push(Oee1);
+                        OEEs.push(100 - Oee1);
+
+                        $(".NG").html(obj.NG);
+                        $("#Target").html(obj.Target);
+
+                        $(".Actual").html(obj.Actual);
+
+                        var hours = Math.floor(Number(obj.StopDuration) / 60);
+                        var mins = Number(obj.StopDuration) % 60;
+                        hours = hours < 10 ? "0" + hours : hours;
+                        mins = mins < 10 ? "0" + mins : mins;
+                        var time = hours + ":" + mins;
+                        $("#StopTime").html(time);
+
+
+
+                        var hours1 = Math.floor(Number(obj.RunningDuration) / 60);
+                        var mins1 = Number(obj.RunningDuration) % 60;
+                        hours1 = hours1 < 10 ? "0" + hours1 : hours1;
+                        mins1 = mins1 < 10 ? "0" + mins1 : mins1;
+                        var time1 = hours1 + ":" + mins1;
+                        $("#RuningTime").html(time1);
+
+                        var hours2 = Math.floor(Number(obj.PlanDuration) / 60);
+                        var mins2 = Number(obj.PlanDuration) % 60;
+                        hours2 = hours2 < 10 ? "0" + hours2 : hours2;
+                        mins2 = mins2 < 10 ? "0" + mins2 : mins2;
+                        var time2 = hours2 + ":" + mins2;
+
+                        $("#Plan").html(time2);
+                        $("#Total").html(obj.NG + obj.Actual);
+
+                        if (obj != "") {
+                            DrawChartOEE(Avaibilitys, Performances, Qualitys, OEEs,obj.Id);
+                        }
+                    }
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });
+
+        }
+        function getData(data, Label) {
+			var _color = "#60bb46";
+			if (data[0] < 50) {
+				_color = "red";
+			}
+			else {
+				if (data[0] < 75) {
+					_color = "orange";
+				}
+			}
+
+			return {
+				labels: [Label, ''],
+				datasets: [{
+					label: 'OEE',
+					data: data,
+					backgroundColor: [
+						_color,
+						'#bec3c7'
+					],
+					borderColor: [
+						_color,
+						'#bec3c7'
+					],
+					borderWidth: 1
+				}]
+			};
+        }
+        function getDataOEE(data, Label) {
+			var _color = "#60bb46";
+			if (data[0] < 50) {
+				_color = "red";
+			}
+			else {
+				if (data[0] < 75) {
+					_color = "orange";
+				}
+			}
+
+			return {
+				labels: [Label, ''],
+				datasets: [{
+					label: 'OEE',
+					data: data,
+					backgroundColor: [
+						_color,
+						'#808080'
+					],
+					borderColor: [
+						_color,
+						'#808080'
+					],
+					borderWidth: 1
+				}]
+			};
+        }
+        function getOption(data) {
+            return {
+                elements: {
+                    center: {
+                        text: data[0] + '%',
+                        color: '#a2aaac', //Default black
+                        fontStyle: 'Helvetica', //Default Arial
+                        sidePadding: 20 //Default 20 (as a percentage)
+                    }
+                },
+                tooltips: { enabled: false },
+                showTooltips: false,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 60,
+                responsive: true,
+            };
+        }
+        function getOptionOEE(data) {
+            return {
+                elements: {
+                    center: {
+                        text: data[0] + '%',
+                        color: '#364977', //Default black
+                        fontStyle: 'Helvetica', //Default Arial
+                        sidePadding: 20 //Default 20 (as a percentage)
+                    }
+                },
+                tooltips: { enabled: false },
+                showTooltips: false,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 60,
+                responsive: true,
+            };
+        }
+        function DrawChartOEE(Avaibilitys, Performances, Qualitys, OEEs , Id) {
+
+            var ctx1 = document.getElementById("pieChart1_"+Id);
+            var ctx2 = document.getElementById("pieChart2_"+Id);
+            var ctx3 = document.getElementById("pieChart3_"+Id);
+            var ctx4 = document.getElementById("pieChart4_"+Id);
+
+            if (OEEs.length > 0) {
+                var myChart1 = new Chart(ctx1, {
+                    type: 'pie',
+                    data: getDataOEE(OEEs, 'OEE'),
+                    options: getOptionOEE(OEEs)
+                });
+            }
+            if (Avaibilitys.length > 0) {
+                var myChart2 = new Chart(ctx2, {
+                    type: 'pie',
+                    data: getData(Avaibilitys, 'Avaibilitys'),
+                    options: getOption(Avaibilitys)
+                });
+            }
+            if (Performances.length > 0) {
+                var myChart3 = new Chart(ctx3, {
+                    type: 'pie',
+                    data: getData(Performances, 'Performances'),
+                    options: getOption(Performances)
+                });
+            }
+            if (Qualitys.length > 0) {
+                var myChart4 = new Chart(ctx4, {
+                    type: 'pie',
+                    data: getData(Qualitys, 'Qualitys'),
+                    options: getOption(Qualitys)
+                });
+            }
+        }
+        function getPlugin() {
+            Chart.pluginService.register({
+                beforeDraw: function (chart) {
+                    if (chart.config.options.elements.center) {
+                        //Get ctx from string
+                        var ctx = chart.chart.ctx;
+
+                        //Get options from the center object in options
+                        var centerConfig = chart.config.options.elements.center;
+                        var fontStyle = centerConfig.fontStyle || 'Arial';
+                        var txt = centerConfig.text;
+                        var color = centerConfig.color || '#000';
+                        var sidePadding = centerConfig.sidePadding || 20;
+                        var sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2)
+                        //Start with a base font of 30px
+                        ctx.font = "30px " + fontStyle;
+
+                        //Get the width of the string and also the width of the element minus 10 to give it 5px side padding
+                        var stringWidth = ctx.measureText(txt).width;
+                        var elementWidth = (chart.innerRadius * 2) - sidePaddingCalculated;
+
+                        // Find out how much the font can grow in width.
+                        var widthRatio = elementWidth / stringWidth;
+                        var newFontSize = Math.floor(30 * widthRatio);
+                        var elementHeight = (chart.innerRadius * 2);
+
+                        // Pick a new font size so it will not be larger than the height of label.
+                        var fontSizeToUse = Math.min(newFontSize, elementHeight);
+
+                        //Set font settings to draw it correctly.
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        var centerX = ((chart.chartArea.left + chart.chartArea.right) / 2);
+                        var centerY = ((chart.chartArea.top + chart.chartArea.bottom) / 2);
+                        ctx.font = fontSizeToUse + "px " + fontStyle;
+                        ctx.fillStyle = color;
+
+                        //Draw text in center
+                        ctx.fillText(txt, centerX, centerY);
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+}
+

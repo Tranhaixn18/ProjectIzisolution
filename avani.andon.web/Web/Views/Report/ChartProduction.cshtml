@@ -1,0 +1,275 @@
+﻿@model List<avSVAW.Models.ProductChartForm>
+
+
+@section header{
+    @ViewBag.Title
+}
+
+<script src="~/assets/js/Chart.min.js"></script>
+
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: #ccc9c9;
+    }
+
+    .box-header {
+        padding: 0px !important;
+    }
+
+    #ChartContainer {
+        color: #012060;
+    }
+
+    .content {
+        background: #FFF !important;
+        min-height: 600px;
+    }
+
+    .new-view {
+        background: #FFF;
+        padding: 30px;
+    }
+
+    h1.title {
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        color: #021d5e;
+    }
+
+    .oee {
+        font-size: 50px;
+        line-height: 210px;
+    }
+
+    .chart-1 {
+        width: 70%;
+        height: 220px;
+        text-align: center;
+        margin: auto;
+    }
+
+    .chart-2 {
+        width: 60%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .text-center {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .sr-only-1 {
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        font-size: 55px;
+        color: #262421;
+        font-weight: bold;
+    }
+
+    .label-text {
+        text-align: center;
+        color: #4c49b3;
+        font-size: 20px;
+    }
+
+        .label-text span {
+            font-weight: bold;
+        }
+		.hid,.show{
+			display:block;
+		}
+		.hid{
+			display:none;
+			min-height:200px;
+			height:200px;
+		}
+</style>
+<h3 style="margin-top: 1px; margin-bottom: 18px;">Biểu đồ xu hướng sản xuất</h3>
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("ChartProduction", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                         <div class="col-sm-1">
+							<label class="control-label">@Resources.Language.FromDate</label>
+						</div>
+						<div class="col-sm-2">
+							<div id="divFromDate" class="input-group input-append">
+								<input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+								<div class="input-group-addon">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-1">
+							<label class="control-label">@Resources.Language.ToDate</label>
+						</div>
+						<div class="col-sm-2">
+							<div id="divToDate" class="input-group input-append">
+								<input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+								<div class="input-group-addon">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-1"><label class="control-label">Model</label></div>
+						<div class="col-sm-2">
+							<input type="text" name="ProductCode" value="@ViewBag.ProductCode" id="ProductCode" class="form-control"/>
+						</div>
+					<div class="col-sm-1"><label class="control-label">Type choose</label></div>
+					<div class="col-sm-2">
+						<select id="TypeChoose" name="TypeChoose" class="form-control">
+							<option value="1" @if("1".Equals(ViewBag.TypeChoose)){ @Html.Raw("selected='selected'"); } >Quantity</option>
+							<option value="2" @if("2".Equals(ViewBag.TypeChoose)) { @Html.Raw("selected='selected'"); } >Takttime</option>
+							<option value="3" @if("3".Equals(ViewBag.TypeChoose)) {@Html.Raw("selected='selected'");}>UPH</option>
+							<option value="4" @if("4".Equals(ViewBag.TypeChoose)) { @Html.Raw("selected='selected'"); } >UPPH</option>
+						</select>
+					</div>
+					</div>
+					<div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                           
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="data" style="display:none;">
+	@foreach(var m in Model){
+		<div class="row">
+			<input type="hidden" class="date1" value="@if(m.Date==null){@Html.Raw("");}else{@Html.Raw(Convert.ToDateTime(m.Date).ToString("yyyy/MM/dd"));}"/>
+			<input type="hidden" class="quantity" value="@m.Quantity"/>
+			<input type="hidden" class="takttime" value="@m.TaktTime"/>
+			<input type="hidden" class="uph" value="@m.UPH"/>
+			<input type="hidden" class="upph" value="@m.UPPH"/>
+		</div>
+	}
+    
+</div>
+<div class="row datacanvas">
+    <div class="col-sm-12 hid @if("1".Equals(ViewBag.TypeChoose) || ViewBag.TypeChoose==null){ @Html.Raw("show");}" id="show1" >
+           <canvas id="ChartQuantity" width="400" height="100"></canvas>
+    </div>
+	<div class="col-sm-12 hid @if("2".Equals(ViewBag.TypeChoose)){ @Html.Raw("show");}" id="show2" >
+         <canvas id="ChartTaktTime" width="400" height="100"></canvas>
+    </div>
+	<div class="col-sm-12 hid @if("3".Equals(ViewBag.TypeChoose)){ @Html.Raw("show");}" id="show3" >
+        <canvas id="ChartUPH" width="400" height="100"></canvas>
+    </div>
+	<div class="col-sm-12 hid @if("4".Equals(ViewBag.TypeChoose)){ @Html.Raw("show");}" id="show4" >
+        <canvas id="ChartUPPH" width="400" height="100"></canvas>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+			CreateChartProduction($("#TypeChoose").val());	
+            //$('#Customer').select2({
+            //});
+			$("#TypeChoose").on("change",function(){
+				$(".datacanvas .hid").removeClass('show');
+				var val = $(this).val();
+				$("#show"+val).addClass('show');
+				CreateChartProduction(val);
+			});
+        });
+
+        function CreateChartProduction(idshow) {
+			var dates = [];
+			var quantitys = [];
+			var takttimes = [];
+			var uphs = [];
+			var upphs = [];
+			$("#data .row").each(function(){
+				dates.push($(this).find(".date1").val());
+				quantitys.push($(this).find(".quantity").val());
+				takttimes.push($(this).find(".takttime").val());
+				uphs.push($(this).find(".uph").val());
+				upphs.push($(this).find(".upph").val());
+			});
+			if(idshow==1){
+			var ctx1 = document.getElementById("ChartQuantity");
+			getChart(ctx1,quantitys,dates);
+			}else if(idshow==2){
+				var ctx2 = document.getElementById("ChartTaktTime");
+				getChart(ctx2,takttimes,dates);
+			}else if(idshow==3){
+			var ctx3 = document.getElementById("ChartUPH");
+			getChart(ctx3,uphs,dates);
+			}else if(idshow==4){
+			var ctx4 = document.getElementById("ChartUPPH");
+			getChart(ctx4,upphs,dates);
+			}else {
+			var ctx1 = document.getElementById("ChartQuantity");
+			getChart(ctx1,quantitys,dates);
+			}
+			
+        }
+        function getChart(ctx,data,labels){
+		var mixedChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'Bar Dataset',
+					data: data,
+					backgroundColor:'blue',
+					// this dataset is drawn below
+					order: 2
+				}, {
+					label: 'Line Dataset',
+					data:data,
+					backgroundColor:'red',
+					fill:false,
+					borderColor:'red',
+					type: 'line',
+					// this dataset is drawn on top
+					order: 1
+				}],
+				labels: labels
+			},
+			options: {
+					legend: {
+						display: false
+					},
+				}
+			});
+		}
+        
+      
+
+    </script>
+
+
+}
+

@@ -1,0 +1,78 @@
+﻿@model List<Model.DataModel.tblLineSchedule>
+@{
+    // ViewBag.Title = "Index";
+    ViewBag.Title = Resources.Language.LineSchedule;
+    ViewBag.SubTitle = Resources.Language.List + " " + Resources.Language.LineSchedule;
+}
+@section header{
+    <p style="margin-top: -10px; margin-left: 22px;">@ViewBag.SubTitle</p>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            @*<div class="box-header">
+                <div>
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-plus-circle"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>*@
+            <div class="box-body">
+                <table id="ScheduleTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr style="text-align:center;">
+                            <th>#</th>
+                            <th>@Resources.Language.LineCode</th>
+                            <th>@Resources.Language.LineName</th>
+                            <th>@Resources.Language.ScheduleCode</th>
+                            <th>@Resources.Language.ScheduleName</th>
+                           
+                            @*<th style="width:30%">Hành Động</th>*@
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                                <tr id="data">
+                                    <td>
+                                        @i
+                                    </td>
+                                    <td>@f.LineCode</td>
+                                    <td>
+                                        @f.LineName
+                                    </td>
+
+                                    <td>@f.ScheduleCode </td>
+                                    <td>@f.ScheduleName </td>
+                                    @*<td>
+                                            <a href="/Department/Edit/@f.Id" class="btn btn-primary  btn-xs">
+                                                <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                            </a>
+                                            &nbsp;
+                                            <a href="/Department/Detail/@f.Id" class="btn btn-success  btn-xs">
+                                                <i class="fa fa-eye"></i>&nbsp; @Resources.Language.Detail &nbsp;&nbsp;
+                                            </a>
+                                            &nbsp;
+                                            <a href="/Department/Delete/@f.Id" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                                <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                            </a>
+
+                                        </td>*@
+
+                                </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+

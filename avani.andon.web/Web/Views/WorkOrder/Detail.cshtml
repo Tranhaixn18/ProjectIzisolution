@@ -1,0 +1,208 @@
+﻿@model Model.DataModel.tblWorkOrder
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Code, "Tên mã", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ProductionCode, "Mã sản xuất", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ProductionCode, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ProductionName, "Tên sản xuất", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ProductionName, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.LineCode, "Mã chuyền", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.LineCode, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ProductCode, "Mã sản phẩm", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ProductCode, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.PlanStart, "Thời gian bắt đầu", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.PlanStart, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.PlanFinish, "Thời gian kết thúc", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.PlanFinish, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Quantity, "Số lượng", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.Quantity, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.QuantityPlanned, "Sô lượng lên kế hoạch", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.QuantityPlanned, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.QuantityProduced, "Số lượng sản xuất", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.QuantityProduced, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.PlanDuration, "Thời gian thực hiện kế hoạch", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.PlanDuration, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Started, "Đã bắt đầu", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.Started, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Finished, "Đã kết thúc", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.Finished, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ActualDuration, "Thực tế", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ActualDuration, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ActualOK, "Sô lượng sản phẩm đạt", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ActualOK, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.ActualNG, "Sản phẩm lỗi", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ActualNG, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.UPH, "UPH", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.UPH, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.HeadCount, "Số lượng công nhân", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.HeadCount, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                </div>
+
+                <div class="form-group" style=" display: flex;">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.UPPH, "UPPH", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.UPPH, htmlAttributes: new { @class = "form-control", @readonly = true })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Status, "Trạng thái", new { @class = "control-label required" })
+                    </div>
+                    <div class="col-sm-3">
+                        @{
+                            string trangthai = "";
+                            if (Model.Status == 0)
+                            {
+                                trangthai = "NotStart";
+                            }
+                            else if (Model.Status == 1)
+                            {
+                                trangthai = "Proccessing";
+                            }
+                            else if (Model.Status == 2)
+                            {
+                                trangthai = "Pause";
+                            }
+                            else if (Model.Status == 3)
+                            {
+                                trangthai = "Finished";
+                            }
+                            else if (Model.Status == 4)
+                            {
+                                trangthai = "Timeout";
+                            }
+                            else if (Model.Status == 5)
+                            {
+                                trangthai = "Cancel";
+                            }
+                        }
+                        @Html.TextBoxFor(model => model.Status, htmlAttributes: new { @Value = trangthai, @class = "form-control", @readonly = true, @id = "status" })
+                    </div>
+                </div>
+                @*<div class="col-sm-2" style="margin-top: 10px;float:right;">
+
+                        <a href="/WorkOrder/Index">
+                            <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                        </a>
+                    </div>*@
+                <div class="form-group" style="margin-top: 10px;">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-6">
+                        <a href="/WorkOrder/Index">
+                            <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

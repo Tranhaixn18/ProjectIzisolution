@@ -1,0 +1,346 @@
+﻿@model Model.DataModel.tblWorkingPlan
+@{
+    ViewBag.SubTitle = Resources.Language.Edit + " " + ViewBag.Title;
+    int ic = 0, sh = 0, sm = 0, eh = 0, em = 0;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 18px;
+            width: 18px;
+            /*background-color: #eee;*/
+        }
+
+        .av-checkbox-all {
+            height: 18px;
+            width: 18px;
+            background-color: bisque;
+        }
+        /* The container */
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            /* Hide the browser's default checkbox */
+            .container input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: bisque;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    </style>
+}
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+                    //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+
+         $(".rdoWorkingShift").on("click", function () {
+                var sh = $(this).attr('data-sh');
+                var sm = $(this).attr('data-sm');
+                var eh = $(this).attr('data-eh');
+                var em = $(this).attr('data-em');
+                $("#StartHour").val(sh);
+                $("#StartMinute").val(sm);
+                $("#FinishHour").val(eh);
+             $("#FinishMinute").val(em);
+
+            });
+
+            $(".rdoBeakTime").on("click", function () {
+                var sh = $(this).attr('data-sh');
+                var sm = $(this).attr('data-sm');
+                var eh = $(this).attr('data-eh');
+                var em = $(this).attr('data-em');
+                $("#B1StartHour").val(sh);
+                $("#B1StartMinute").val(sm);
+                $("#B1FinishHour").val(eh);
+                $("#B1FinishMinute").val(em);
+                //if ($(this).val() == "0") {
+                //    $(".view-breakTime").hide();
+                //} else {
+                //    $(".view-breakTime").show();
+                //}
+            });
+            //Check ngày
+            $("#CheckDayAll").on('ifChanged', function (event) {
+                var _value = this.checked;
+                //alert(_value);
+                $("input[id^='Day_']").each(function () {
+                    if (_value) {
+                        $(this).iCheck('check');
+                    }
+                    else {
+                        $(this).iCheck('uncheck');
+                    }
+                });
+
+            });
+
+
+
+
+            $("#CustomerId").select2({
+            });
+            $("#ProviderId").select2({
+            });
+
+            $("#Year").on("change", function () {
+                var month = $("#Month").val();
+                var year = $(this).val();
+                if (year != "" && month != "") {
+                    window.location.href = "/WorkingPlan/Edit/" + $("#Id").val() +"?Year=" + year + "&month=" + month;
+                }
+            });
+            $("#Month").on("change", function () {
+                var month = $(this).val();
+                var year = $("#Year").val();
+                if (year != "" && month != "") {
+                    window.location.href = "/WorkingPlan/Edit/" + $("#Id").val()+"?Year=" + year + "&month=" + month;
+                }
+            });
+        })
+</script>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Edit", "WorkingPlan",new { WorkingId = ViewBag.WorkingId,LineId=ViewBag.LineId }, FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+            <div class="box-body">
+
+                <input id="Id" name="Id" type="hidden" value="@Model.Id" class="form-control" />
+                <input  name="Year" type="hidden" value="@Model.Year" class="form-control" />
+                <input  name="Month" type="hidden" value="@Model.Month" class="form-control" />
+                <input  name="Day" type="hidden" value="@Model.Day" class="form-control" />
+                <div class="form-group">
+                    <div class="col-md-1 col-sm-6 col-xs-12">
+                        <label class="control-label required">@Resources.Language.Plan</label>
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Plan, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Plan, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-1">
+                        <label class="control-label required">@Resources.Language.TaktTime</label>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.TaktTime, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TaktTime, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label required">@Resources.Language.Headcount</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.HeadCount, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.HeadCount, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-1 col-sm-6 col-xs-12">
+                        <label class="control-label required">@Resources.Language.Quality</label>
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Quality, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Quality, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <h3 class="box-title">@Resources.Language.WorkingShift</h3>
+                <div class="form-group">
+
+                    <div class="col-sm-2">
+                        <label class="control-label required">@Resources.Language.Start</label>
+
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.StartHour, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StartHour, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.StartMinute, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StartMinute, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="control-label required">@Resources.Language.Finish</label>
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.FinishHour, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FinishHour, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.FinishMinute, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FinishMinute, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+                <h3 class="box-title">@Resources.Language.BreakTime</h3>
+                <div class="view-breakTime">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B1StartHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B1StartHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B1StartMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B1StartMinute, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B1FinishHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B1FinishHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B1FinishMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B1FinishMinute, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B2StartHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B2StartHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B2StartMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B2StartMinute, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B2FinishHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B2FinishHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B2FinishMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B2FinishMinute, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Start</label>
+
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B3StartHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B3StartHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B3StartMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B3StartMinute, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label ">@Resources.Language.Finish</label>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B3FinishHour, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B3FinishHour, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.B3FinishMinute, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.B3FinishMinute, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    </div>
+
+                    @*<button type="button" onclick="SaveWorkingPlan()" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;Ghi lại&nbsp;</button>*@
+                    <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+            }
+
+        </div>
+
+    </div>
+</div>

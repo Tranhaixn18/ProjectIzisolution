@@ -1,0 +1,121 @@
+﻿@model List<avSVAW.Models.NodeForm>
+@{
+    @*ViewBag.Title = Resources.Language.Node;
+    ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;*@
+}
+@section header{
+    @ViewBag.SubTitle
+}
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.Node</h3>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box box-primary">
+            <div class="box-header">
+                @using (Html.BeginForm("Index", "Node", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.Line</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select id="LineId" name="LineId" class="form-control col-md-7 col-xs-12">
+                                <option value="0">@Resources.Language.All</option>
+                                @{
+                                    var strSelect = "";
+
+                                    for (var iType = 0; iType < ViewBag.Lines.Count; iType++)
+                                    {
+                                        if (ViewBag.Lines[iType].Id.ToString() == ViewBag.Line)
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+                                        <option value="@ViewBag.Lines[iType].Id" @strSelect> @Html.Raw(HttpUtility.HtmlDecode(@ViewBag.Lines[iType].Name))</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id=""><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                            @*<a href="/Node/Create" class="btn btn-success" id=""><i class="fa fa-plus-circle"></i>&nbsp;@Resources.Language.Create</a>*@
+                            &nbsp;
+                            &nbsp;
+                            &nbsp;
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="box box-primary">
+            <div class="box-header">
+                <div>
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-plus-circle"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Name</th>
+                            <th>@Resources.Language.Order</th>
+                            <th>@Resources.Language.Line</th>
+                            @*<th>R_ID</th>*@
+                            <th>@Resources.Language.Description</th>
+                            <th style="width: 20%;">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 0;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                                i = i + 1;
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@f.Name</td>
+                                    <td>@f.nOrder</td>
+                                    <td>@f.LineName</td>
+                                    @*<td style="text-align:center">@f.rId</td>*@
+                                    <td>@f.Description</td>
+                                    <td>
+                                        <a href="/Node/Edit/@f.Id" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                        </a>
+                                        <a href="/Node/Delete/@f.Id" class="btn btn-danger btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm');">
+                                            <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Delete &nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#CreateNode").click(function () {
+                window.location = '/Node/Create';
+            });
+
+
+        });
+    </script>
+}

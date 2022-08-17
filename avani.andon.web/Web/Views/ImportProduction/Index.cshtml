@@ -1,0 +1,298 @@
+﻿@model List<Model.DataModel.tblWorkingPlan>
+@{
+    ViewBag.Title = Resources.Language.ImportProduction;
+    ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;
+    var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("Index", "ImportProduction", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.Day</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="strDate" name="strDate" data-format="yyyy/MM/dd" value="@ViewBag.strDate" type="text" class="form-control col-md-5 col-xs-12" />
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Line</th>
+                            <th>@Resources.Language.Headcount</th>
+                            <th>@Resources.Language.TaktTime</th>
+                            <th>@Resources.Language.Quality</th>
+                            <th>@Resources.Language.NG</th>
+                            <th>@Resources.Language.FromDate</th>
+                            <th>@Resources.Language.ToDate</th>
+                            <th style="width: 12%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                string LineName = "";
+                                foreach (var l in ViewBag.lstLines)
+                                {
+                                    if (l.Id == ev.LineId)
+                                    {
+                                        LineName = l.Name;
+                                        break;
+                                    }
+
+                                }
+                                <tr id="row_@ev.Id">
+                                    <td>@iCount</td>
+
+                                    <td>@LineName </td>
+                                    <td>@ev.HeadCount</td>
+                                    <td>@ev.TaktTime</td>
+                                    <td class="view-quality">@ev.Quality</td>
+                                    <td class="view-ng">@ev.NG</td>
+                                    
+                                    <td>@(ev.StartHour.ToString("00")+":"+ev.StartMinute.ToString("00"))</td>
+                                    <td>@(ev.FinishHour.ToString("00")+":"+ev.FinishMinute.ToString("00"))</td>
+                                    <td>
+                                        <a href="#" data-line="@ev.LineId" data-id="@ev.Id" data-ng="@ev.NG" data-quality="@ev.Quality" class="showQuality btn btn-primary  btn-xs">
+                                            <i class="fa fa-file-o"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="EditQuality" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">@Resources.Language.Quality</h3>
+                <button type="button" class="close" style="margin-top:-32px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <label style="line-height:35px;margin-right:10px;">Quality</label>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <input type="radio" id="chkQual" name="qual" value="quality" class="isqual">
+                            </span>
+                            <input type="text" class="form-control" id="Quality" name="Quality">
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <label  style="line-height:35px;margin-right:10px;">NG</label>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <input type="radio" id="chkNG" name="qual" value="ng" class="isqual">
+                            </span>
+                            <input type="text" id="NG" value="" disabled="disabled"  name="NG" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="Id" id="Id" value="0" />
+                <input type="hidden" name="LineId" id="LineId" value="0" />
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                @if (Common.UserFunction.USER_QUALITY(session.Role))
+                {
+                    <button type="button" id="saveQuality" class="btn btn-primary">@Resources.Language.Save</button>
+                }
+               
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Resources.Language.Back</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+        function UpdateReason(event) {
+            var id = $(event).attr('data-id');
+            if (Number(id) > 0) {
+                $("#editReason").modal('show');
+                $("#modelId").val(id);
+                var t1 = $("#row_" + id + " .view-t1").html();
+                if (t1 != "") {
+                    $("#save-reason").show();
+                } else {
+                    $("#save-reason").hide();
+                }
+                $("#Reason").val("");
+
+            }
+        }
+        $(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false
+            });
+            // $('#listloss').DataTable({
+            //    'paging': true,
+            //    'lengthChange': true,
+            //    'searching': true,
+            //    'ordering': true,
+            //    'info': false,
+            //    'autoWidth': false
+            //})
+
+            $(".update-reason").click(function () {
+                var id = $(this).attr('data-id');
+                if (Number(id) > 0) {
+                    $("#editReason").modal('show');
+                    $("#modelId").val(id);
+                    var t1 = $("#row_" + id + " .view-t1").html();
+                    if (t1 != "") {
+                        $("#save-reason").show();
+                    } else {
+                        $("#save-reason").hide();
+                    }
+                    $("#Reason").val("");
+                }
+            });
+            $(".showQuality").click(function () {
+                var id = $(this).attr('data-id');
+                var lineid = $(this).attr('data-line');
+                if (Number(id) > 0) {
+                    $("#EditQuality").modal('show');
+                    $("#Id").val(id);
+                      var q = $("#row_" + id + " .view-quality").html();
+                    var ng = $("#row_" + id + " .view-ng").html();
+
+                    $("#Quality").val(q);
+                    $("#LineId").val(lineid);
+                    $("#NG").val(ng);
+                    if (ng != "" && Number(ng) > 0) {
+                       $("#NG").removeAttr('disabled');
+                        $("#Quality").attr('disabled', 'disabled');
+                        $("#chkNG").prop('checked', true);
+                    } else {
+                        $("#chkQual").prop('checked', true);
+                           $("#Quality").removeAttr('disabled');
+                            $("#NG").attr('disabled', 'disabled');
+                    }
+                }
+            });
+            $('input[name="qual"]').change(function () {
+                if ($(this).val() == "quality") {
+                    $("#Quality").removeAttr('disabled');
+                    $("#NG").attr('disabled', 'disabled');
+                    $("#NG").val('');
+                } else {
+                     $("#NG").removeAttr('disabled');
+                    $("#Quality").attr('disabled', 'disabled');
+                    $("#Quality").val('');
+                }
+
+            });
+            $("#saveQuality").click(function () {
+                var id = $("#Id").val();
+                var Quality = $("#Quality").val();
+                var NG = $("#NG").val();
+                var LineId = $("#LineId").val();
+                if (id > 0) {
+                    if (Quality != "" || NG!="") {
+                        $.ajax({
+                            url: "/ImportProduction/UpdateQuality",
+                            data: {
+                                Id: id,
+                                LineId: LineId,
+                                Quality: Quality,
+                                NG: NG
+                            },
+                            type: "POST",
+                            beforeSend: function () {
+                                $('#loading').show();
+                            },
+                            success: function (result) {
+                                    $("#EditQuality").modal('hide');
+                                    $("#row_" + id + " .view-quality").html(Quality);
+                                    $("#row_" + id + " .view-ng").html(NG);
+                            },
+                            error: function (errormessage) {
+                                console.log("error", errormessage);
+                                alert("Có lỗi");
+                            }
+                        }).done(function () {
+                            $('#loading').hide();
+                        });
+                    } else {
+                    }
+                }
+            });
+
+
+        });
+    </script>
+
+
+}

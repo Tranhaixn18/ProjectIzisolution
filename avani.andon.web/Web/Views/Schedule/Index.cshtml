@@ -1,0 +1,117 @@
+﻿@model List<Model.DataModel.tblSchedule>
+@{
+    // ViewBag.Title = "Index";
+    ViewBag.Title = Resources.Language.Schedule;
+    ViewBag.SubTitle = Resources.Language.List + " " + Resources.Language.Schedule;
+}
+@section header{
+    <p style="margin-top: -10px; margin-left: 22px;">@ViewBag.SubTitle</p>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            @*<div class="box-header">
+                <div>
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-plus-circle"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>*@
+            <div class="box-body">
+                <table id="ScheduleTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr style="text-align:center;">
+                            <th>#</th>
+                            <th>@Resources.Language.Name</th>
+                            <th>@Resources.Language.FromDate</th>
+                            <th>@Resources.Language.ToDate</th>
+                            <th>@Resources.Language.StartHour</th>
+                            <th>@Resources.Language.FinishHour</th>
+                            <th>@Resources.Language.DayOfWeek</th>
+                            <th>Giai đoạn</th>
+                            @*<th style="width:30%">Hành Động</th>*@
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                                <tr id="data">
+                                    <td>
+                                        @i
+                                    </td>
+                                    <td>@f.Name</td>
+                                    <td>
+                                        @f.FromDate
+                                    </td>
+
+                                    <td>@f.ToDate </td>
+                                    <td>@f.StartHour </td>
+                                    <td>@f.FinishHour </td>
+                                    <td>
+                                        @{
+                                            string ngay = "";
+                                            if (f.DayOfWeek == 0)
+                                            {
+                                                ngay = "Chủ Nhật";
+                                            }
+                                            if (f.DayOfWeek == 1)
+                                            {
+                                                ngay = "Thứ Hai";
+                                            }
+                                            if (f.DayOfWeek == 2)
+                                            {
+                                                ngay = "Thứ Ba";
+                                            }
+                                            if (f.DayOfWeek == 3)
+                                            {
+                                                ngay = "Thứ Tư";
+                                            }
+                                            if (f.DayOfWeek == 4)
+                                            {
+                                                ngay = "Thứ Năm";
+                                            }
+                                            if (f.DayOfWeek == 5)
+                                            {
+                                                ngay = "Thứ Sáu";
+                                            }
+                                            if (f.DayOfWeek == 6)
+                                            {
+                                                ngay = "Thứ Bảy";
+                                            }
+                                        }
+                                        @ngay
+                                    </td>
+                                    <td>
+                                        @f.DayPeriod
+                                    </td>
+                                    @*<td>
+                                        <a href="/Department/Edit/@f.Id" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                        </a>
+                                        &nbsp;
+                                        <a href="/Department/Detail/@f.Id" class="btn btn-success  btn-xs">
+                                            <i class="fa fa-eye"></i>&nbsp; @Resources.Language.Detail &nbsp;&nbsp;
+                                        </a>
+                                        &nbsp;
+                                        <a href="/Department/Delete/@f.Id" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                            <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                        </a>
+
+                                    </td>*@
+
+                                </tr>
+                                                i = i + 1;
+                                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

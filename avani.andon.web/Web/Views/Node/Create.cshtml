@@ -1,0 +1,142 @@
+﻿@model avSVAW.Models.NodeForm
+@{
+
+    //ViewBag.Title = Resources.Language.Node;
+    //ViewBag.SubTitle = Resources.Language.Create + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 25px;
+            width: 25px;
+            /*background-color: #eee;*/
+        }
+    </style>
+
+}
+
+@section Scripts{
+    <script>
+        //add css for attach file element
+        var input = $("input:file").css({
+            width: "100%",
+            border: "0.1px solid"
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+            var _atsite = $("#Active").val();
+            //alert(_atsite);
+            if (_atsite == "True") {
+                //alert(_atsite == "value");
+                $("#Chk_Active").attr('checked', true);
+            }
+            $("#Chk_Active").on('change', function (event) {
+                var _value = this.checked;
+                if (_value) {
+                    $("#Active").val('true');
+                }
+                else {
+                    $("#Active").val('false');
+                }
+            });
+        })
+
+    </script>
+}
+
+<h3 style="margin-top: -10px;">@Resources.Language.Create @Resources.Language.Node</h3>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Create", "Node", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+            <div class="box-body">
+                <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Name, Resources.Language.Name, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12", @required = "required" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.nOrder, Resources.Language.Order, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.nOrder, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12", @type = "number", @min = "1", @step = "1" })
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+
+                </div>
+                @*<div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.rId, "R_ID", new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.rId, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+
+                </div>*@
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Active, Resources.Language.Active, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="checkbox" id="Chk_Active" name="Chk_Active" class="av-checkbox" />
+                        @Html.HiddenFor(model => model.Active, new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.LineId, Resources.Language.Line, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.DropDownListFor(model => model.LineId, Model.Lines, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.LineId, "", new { @class = "text-danger" })
+                </div>
+                <div class="box-footer">
+                    <a href="@Url.Action("Index")" class="btn btn-default" style="margin-left:170px;">
+                        @Resources.Language.Back
+                    </a>
+                    <button style="margin-left:0px;" type="submit" class="btn btn-success">@Resources.Language.Save&nbsp;</button>
+
+                </div>
+            </div>
+            }
+        </div>
+
+    </div>
+</div>
+

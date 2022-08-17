@@ -1,0 +1,331 @@
+﻿
+@model List<avSVAW.Models.ListLossForm>
+
+@{
+    ViewBag.Title = Resources.Language.ListLoss;
+    var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+    var sessionLang = Session[Common.GlobalConstants.LANG_SESSION];
+    string lang = "";
+    if (sessionLang != null)
+    {
+        lang = Convert.ToString(sessionLang);
+    }
+    var listId = "";
+}
+
+
+@section Styles{
+    <style type="text/css">
+        #user-list_wrapper {
+            margin-top: 10px;
+        }
+    </style>
+}
+
+@*<script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
+@Scripts.Render("~/Scripts/Monitoring/listloss.js")
+@Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.js")
+@Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.min.js")
+@Scripts.Render("/signalr/hubs")*@
+
+@*<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                    <div class="col-sm-1">
+                        <label class="control-label">Từ ngày</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="strDate" name="strDate" data-format="yyyy/MM/dd" value="@ViewBag.strDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3>@Resources.Language.ListLoss</h3>
+            </div>
+            <div class="box-body">
+                <table id="listloss" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>@Resources.Language.Line</th>
+                            <th>@Resources.Language.Node</th>
+                            <th>@Resources.Language.Status</th>
+                            <th>@Resources.Language.CallHelp</th>
+                            <th>@Resources.Language.Response</th>
+                            <th>@Resources.Language.Done</th>
+                            <th>@Resources.Language.Reason</th>
+                            @*<th style="width: 20%">@Resources.Language.Action</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            if (item != null)
+                            {
+                                listId += item.Id + ";";
+                                string bgColor = "#FFF";
+                                string status = "";
+                                string fColor = "#000";
+                                
+                                    foreach (var ed in ViewBag.EventDefs)
+                                    {
+                                        if (ed.Id == item.EventDefId)
+                                        {
+                                            bgColor = ed.Color;
+                                            if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                                            {
+                                                status = ed.Name_EN;
+                                            }
+                                            else
+                                            {
+                                                status = ed.Name_VN;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                             if (status != "")
+                                {
+                                    fColor = "#FFF";
+                                }
+                                if (item.T1 != null || item.TT1 != "")
+                                {
+                                    bgColor = "#FFF";
+                                    fColor = "#000";
+                                }
+                               
+                                <tr id="row_@item.Id" style="background:@bgColor;color:@fColor;" data-id="@item.Id" class="row-click">
+
+                                    <td class="view-linename">@item.LineName</td>
+                                    <td class="view-nodename">@item.NodeName</td>
+                                    <td class="view-status">@status</td>
+                                    <td class="view-t3">@item.T3</td>
+                                    <td class="view-t2">@item.T2</td>
+                                    <td class="view-t1">@item.T1</td>
+                                    <td class="view-reason">@item.Reason</td>
+                                    @*<td>@item.Role</td>*@
+                                    @*<td>
+                                        <a data-id="@item.Id" href="#" class="btn btn-info btn-xs update-reason"><i class="fa fa-pencil"></i> Update Reason </a>
+                                    </td>*@
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row status-color" style="display:none;">
+    <input type="hidden" id="listId" value="@listId"/>
+    @foreach (var eventdef1 in ViewBag.EventDefs)
+    {
+        <div class="col-md-x">
+            <div id="EventDef-@eventdef1.Id" data-name="@eventdef1.Name_EN" data-nameen="@eventdef1.Name_EN" data-namevi="@eventdef1.Name_VN" data-id="@eventdef1.Color" class="eventdef-status">
+                &nbsp;
+            </div>
+        </div>
+    }
+</div>
+<div class="modal fade" id="editReason" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">@Resources.Language.Reason</h3>
+                <button type="button" class="close" style="margin-top:-32px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach (var gReason in ViewBag.GroupReason)
+                {
+                    var itemss = gReason.Items;
+                <div class="form-group">
+                    <div class="col-md-12"> <b>@gReason.GroupName</b></div>
+                    <div class="clearfix"></div>
+                    @foreach (var item in itemss)
+                    {
+                        <div class="col-md-12">
+                            <input id="group-id_@item.Id" style="margin-left:10px;" type="radio" name="groupreason" value="@item.Name" />
+                            <label style="float: none!important; font-weight: normal;" for="group-id_@item.Id"> @item.Name </label>
+                        </div>
+                    }
+                </div>
+
+                }
+            <div class="form-group">
+                <div class="col-md-12"> <b>@Resources.Language.Other</b></div>
+                <div class="clearfix"></div>
+                <div class="col-md-2">
+                    <input style="margin-left:10px;" id="group-id_0" type="radio" name="groupreason" value="0" />  <label style="float: none!important; font-weight: normal;" for="group-id_0"> @Resources.Language.Other </label>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" style="display:none;" name="groupother" value="" id="Reason" />
+                </div>
+            </div>
+                <div class="col-md-8 form-group">
+                    <input type="hidden" name="modelId" id="modelId" value="0" />
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                @if (Common.UserFunction.USER_LINE_LEADER(session.Role) )
+                {
+                    <button type="button" id="save-reason" class="btn btn-primary">@Resources.Language.Save</button>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Resources.Language.Back</button>
+
+            </div>
+            </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+        function UpdateReason(event) {
+            var id = $(event).attr('data-id');
+			$('input[name="groupreason"]').prop('checked',false);
+             if (Number(id) > 0) {
+			 
+					var textReason = $(event).closest('tr').find('.view-reason').html();
+					 $('input[name="groupreason"]').each(function () {
+						if ($(this).val() == textReason) {
+							$(this).prop('checked',true);
+						} else {
+							$(this).prop('checked',false);
+						}
+					});
+			 
+                    $("#editReason").modal('show');
+                    $("#modelId").val(id);
+                 var t1 = $("#row_" + id + " .view-t1").html();
+                 if (t1 != "") {
+                     $("#save-reason").show();
+                 } else {
+                     $("#save-reason").hide();
+                 }
+                    $("#Reason").val("");
+
+                }
+        }
+        $(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false
+            });
+            // $('#listloss').DataTable({
+            //    'paging': true,
+            //    'lengthChange': true,
+            //    'searching': true,
+            //    'ordering': true,
+            //    'info': false,
+            //    'autoWidth': false
+            //})
+
+            $(".update-reason").click(function () {
+                var id = $(this).attr('data-id');
+                if (Number(id) > 0) {
+                    $("#editReason").modal('show');
+                    $("#modelId").val(id);
+                    var t1 = $("#row_" + id + " .view-t1").html();
+                     if (t1 != "") {
+                         $("#save-reason").show();
+                     } else {
+                         $("#save-reason").hide();
+                     }
+                    $("#Reason").val("");
+                }
+            });
+            $(".row-click").click(function () {
+                var id = $(this).attr('data-id');
+				$('input[name="groupreason"]').prop('checked',false);
+                if (Number(id) > 0) {
+					var textReason = $(this).closest('tr').find('.view-reason').html();
+					 $('input[name="groupreason"]').each(function () {
+						if ($(this).val() == textReason) {
+							$(this).prop('checked',true);
+						} else {
+							$(this).prop('checked',false);
+						}
+					});
+					
+                    $("#editReason").modal('show');
+                    $("#modelId").val(id);
+                     var t1 = $("#row_" + id + " .view-t1").html();
+                     if (t1 != "") {
+                         $("#save-reason").show();
+                     } else {
+                         $("#save-reason").hide();
+                     }
+                    $("#Reason").val("");
+                  
+                }
+            });
+            $('input[name="groupreason"]').change(function () {
+                if ($(this).val() == "0") {
+                    $("#Reason").show();
+                   $("#Reason").val("");
+                } else {
+                     $("#Reason").hide();
+                     $("#Reason").val($(this).val());
+                }
+               
+            });
+            $("#save-reason").click(function () {
+                var id = $("#modelId").val();
+                var reason = $("#Reason").val();
+                if (id > 0) {
+                    if (reason != "") {
+                        $.ajax({
+                            url: "/ListLoss/UpdateReason",
+                            data: {
+                                Id: id,
+                                Reason: reason
+                            },
+                            type: "POST",
+                            beforeSend: function () {
+                                $('#loading').show();
+                            },
+                            success: function (result) {
+                                if (result == 'OK') {
+                                    $("#editReason").modal('hide');
+                                    $("#row_" + id + " .view-reason").html(reason);
+                                } else {
+                                    console.log("error", result);
+                                    alert("Có lỗi");
+                                }
+
+                            },
+                            error: function (errormessage) {
+                                console.log("error", errormessage);
+                                alert("Có lỗi");
+                            }
+                        }).done(function () {
+                            $('#loading').hide();
+                        });
+                    } else {
+                    }
+                }
+            });
+
+
+        });
+    </script>
+
+
+}
+

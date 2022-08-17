@@ -1,0 +1,276 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.EffOperation;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+    string DataValue = "", DataLabel = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/custom.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/Scripts/adminlte/components/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/js/Chart.min.js"></script>
+    <style>
+        body{background:#FFF;color:#333;}
+        div.box{background:#FFF; border:0px;height: auto;margin-top:20px;}
+        .center{text-align:center;}
+        .form-group{width:60%;margin:auto;}
+        .control-label,.control-value{font-size:20px;}
+        .box-body{text-align:center;}
+        .header{border-bottom: 2px solid #000;width:100%;text-align:center;}
+        .header .logo{position:absolute;left:30px; top:10px;}
+        .header .logo img{height:90px;}
+        .header .company-info{text-align:center;}
+        .header .company-info p{font-size:30px;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img src="~/assets/img/favicon-small.png"/></div>
+        <div class="company-info">
+            <h1>SUMIDEN VIETNAM AUTOMOTIVE WIRE</h1>
+            <p> Nhà máy : F2 Hưng Yên </p>
+        </div>
+    </div>
+        <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <label class="control-label">Từ ngày : @ViewBag.FromDate</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label">Đến ngày : @ViewBag.ToDate</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label">Ca làm việc : @ViewBag.WorkShift</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label">Loại máy : @ViewBag.NodeType</label>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="col-sm-12" id="ChartContainer">
+            <canvas id="BarChart" height="30%" width="80%"></canvas>
+        </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            getPlugin();
+             var DataValue = [];
+             var DataLabel = [];
+             @foreach (var item in ViewBag.Model)
+             {
+               @Html.Raw("DataValue.push('"+item.WorkingPercent + "');");
+               @Html.Raw("DataLabel.push('"+item.NodeName + "');");
+             }
+
+            DrawChartEff(DataValue, DataLabel);
+        });
+
+        function DrawChartEff(DataValue, DataLabel) {
+            //alert(DataValue);
+            var ctx = document.getElementById('BarChart');
+            Chart.defaults.global.showTooltips = false;
+
+            var color = new Array("#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a");
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: DataLabel,
+                    datasets: [
+                        {
+                            label: DataLabel,
+                            data: DataValue,
+                            backgroundColor: color,
+                        },
+
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: "Biểu đồ Hiệu suất vận hành",
+                        fontSize: 24
+
+                    },
+                    tooltips: {
+                        enabled: false
+                        //mode: 'label',
+                        //callbacks: {
+                        //    label: function (tooltipItem, data) {
+                        //        return;
+                        //        var datasetIndex = tooltipItem.datasetIndex;
+                        //        var datasetLabel = data.datasets[datasetIndex].label;
+                        //        var yLabel = tooltipItem.yLabel;
+                        //        //var sum = data.datasets.reduce((sum, dataset) => {
+                        //        //    return sum + dataset.data[tooltipItem.index];
+                        //        //}, 0);
+                        //        //var percent = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] / sum * 100;
+                        //        //percent = percent.toFixed(0);
+                        //        return  yLabel + '%';
+                        //    }
+                        //}
+                    },
+
+                    "hover": {
+                        "animationDuration": 0
+                    },
+                    "animation": {
+                        "duration": 1,
+                        "onComplete": function () {
+                            var chartInstance = this.chart,
+                                ctx = chartInstance.ctx;
+
+                            ctx.font = Chart.helpers.fontString(24, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function (bar, index) {
+                                    var data = dataset.data[index] + ' %';
+                                    //ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                                    var _y = bar._model.y - 5;
+                                    //alert(dataset.data[index] > 90);
+                                    if (dataset.data[index] > 90) {
+                                        _y = bar._model.y + 35;
+                                    }
+
+                                    ctx.fillText(data, bar._model.x, _y);
+
+                                });
+                            });
+                        }
+                    },
+
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                fontSize: 24,
+                            },
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                max: 100,
+                                fontSize: 24,
+                                beginAtZero: true,
+                                callback: function (value, index, values) {
+                                    if (Math.floor(value) === value) {
+                                        return value;
+                                    }
+                                }
+                            },
+                        }]
+                    }
+                }
+            });
+        }
+        function getPlugin() {
+            //add plugin chartjs
+            Chart.pluginService.register({
+                        beforeInit: function (chart) {
+                            var hasWrappedTicks = chart.config.data.labels.some(function (label) {
+                                return label.indexOf('<br/>') !== -1;
+                            });
+
+                            if (hasWrappedTicks) {
+                                // figure out how many lines we need - use fontsize as the height of one line
+                                var tickFontSize = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontSize, Chart.defaults.global.defaultFontSize);
+                                var maxLines = chart.config.data.labels.reduce(function (maxLines, label) {
+                                    return Math.max(maxLines, label.split('<br/>').length);
+                                }, 0);
+                                var height = (tickFontSize + 2) * maxLines + (chart.options.scales.xAxes[0].ticks.padding || 0);
+
+                                // insert a dummy box at the bottom - to reserve space for the labels
+                                Chart.layoutService.addBox(chart, {
+                                    draw: Chart.helpers.noop,
+                                    isHorizontal: function () {
+                                        return true;
+                                    },
+                                    update: function () {
+                                        return {
+                                            height: this.height
+                                        };
+                                    },
+                                    height: height,
+                                    options: {
+                                        position: 'bottom',
+                                        fullWidth: 1,
+                                    }
+                                });
+
+                                // turn off x axis ticks since we are managing it ourselves
+                                chart.options = Chart.helpers.configMerge(chart.options, {
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                display: false,
+                                                // set the fontSize to 0 so that extra labels are not forced on the right side
+                                                fontSize: 0
+                                            }
+                                        }]
+                                    }
+                                });
+
+                                chart.hasWrappedTicks = {
+                                    tickFontSize: tickFontSize
+                                };
+                            }
+                        },
+                        afterDraw: function (chart) {
+                            if (chart.hasWrappedTicks) {
+                                // draw the labels and we are done!
+                                chart.chart.ctx.save();
+                                var tickFontSize = chart.hasWrappedTicks.tickFontSize;
+                                var tickFontStyle = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+                                var tickFontFamily = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+                                var tickLabelFont = Chart.helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+                                chart.chart.ctx.font = tickLabelFont;
+                                chart.chart.ctx.textAlign = 'center';
+                                var tickFontColor = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].fontColor, Chart.defaults.global.defaultFontColor);
+                                chart.chart.ctx.fillStyle = tickFontColor;
+
+                                var meta = chart.getDatasetMeta(0);
+                                var xScale = chart.scales[meta.xAxisID];
+                                var yScale = chart.scales[meta.yAxisID];
+
+                                chart.config.data.labels.forEach(function (label, i) {
+                                    label.split('<br/>').forEach(function (line, j) {
+                                        chart.chart.ctx.fillText(line, xScale.getPixelForTick(i + 0.5), (chart.options.scales.xAxes[0].ticks.padding || 0) + yScale.getPixelForValue(yScale.min-5) +
+                                            // move j lines down
+                                            j * (chart.hasWrappedTicks.tickFontSize + 2));
+                                    });
+                                });
+
+                                chart.chart.ctx.restore();
+                            }
+                        }
+                    });
+        }
+     </script>
+</body>
+</html>
+

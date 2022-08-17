@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "Config Service";
+}
+@section header{
+    @ViewBag.Title
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+
+ 
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Save", "ConfigService", FormMethod.Post, new { @class = "form-horizontal form-label-left" }))
+            {
+
+            <div class="box-body">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        Ca làm việc :
+                    </div>
+                </div>
+                @foreach (var config in ViewBag.WorkShifts)
+                {
+                    <div class="form-group">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-2">
+                            <label class="control-label">@config.Name</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="control-label">Bắt đầu</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" style="width:45%;display: inline-block;" readonly="readonly" class="form-control" name="StartHour" value="@config.StartHour" />
+                            <input type="text"  style="width:45%;display: inline-block;" readonly="readonly" class="form-control" name="StartMinute" value="@config.StartMinute" />
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="control-label">Kết thúc</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text"  style="width:45%;display: inline-block;" readonly="readonly" class="form-control" name="FinishHour" value="@config.FinishHour" />
+                            <input type="text" style="width:45%;display: inline-block;"  readonly="readonly" class="form-control" name="FinishMinute" value="@config.FinishMinute" />
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        Lịch kết xuất báo cáo :
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.ExportWorkShift) { @("checked='checked'"); } value="true" name="ExportWorkShift" />
+             Theo ca</div>
+
+</div>
+
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.ExportWeek) { @("checked='checked'"); } value="true" name="ExportWeek" /> Theo tuần
+                    </div>
+                    <div class="col-sm-2">Ngày bắt đầu tuần</div>
+                    <div class="col-sm-2">
+                        <select name="DateInWeek" id="DateInWeek" class="form-control">
+                            <option value="0" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==0) { @("selected='selected'"); }>Thứ 2</option>
+                            <option value="1" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==1) { @("selected='selected'"); }>Thứ 3</option>
+                            <option value="2" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==2) { @("selected='selected'"); }>Thứ 4</option>
+                            <option value="3" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==3) { @("selected='selected'"); }>Thứ 5</option>
+                            <option value="4" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==4) { @("selected='selected'"); }>Thứ 6</option>
+                            <option value="5" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==5) { @("selected='selected'"); }>Thứ 7</option>
+                            <option value="6" @if (ViewBag.ConfigService != null && ViewBag.ConfigService.DateInWeek ==6) { @("selected='selected'"); }>Chủ nhật</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">
+                    <input type="checkbox"  @if (ViewBag.ConfigService != null && ViewBag.ConfigService.ExportMonth) { @("checked='checked'"); } value="true" name="ExportMonth" /> Theo tháng</div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2"><input type="checkbox"  @if (ViewBag.ConfigService != null && ViewBag.ConfigService.ExportQuarter) { @("checked='checked'"); } value="true" name="ExportQuarter" /> Theo Quý</div>
+                </div> 
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2"><input type="checkbox"  @if (ViewBag.ConfigService != null && ViewBag.ConfigService.ExportYear) { @("checked='checked'"); } value="true" name="ExportYear" /> Theo Năm</div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">Thư mục lưu trữ:</div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="PathFolder" value="@if (ViewBag.ConfigService != null) { @ViewBag.ConfigService.PathFolder }" />
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    <a href="~/" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+                }
+
+
+            </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

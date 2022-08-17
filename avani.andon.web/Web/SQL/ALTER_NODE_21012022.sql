@@ -1,0 +1,15 @@
+USE [Avani.Andon]
+
+DROP TABLE tblNode
+
+CREATE TABLE tblNode(
+	Id INT IDENTITY(1,1) PRIMARY KEY,
+	Name NVARCHAR(255) NOT NULL,
+	Description NVARCHAR(1024) NULL,
+	Active BIT NOT NULL DEFAULT 0,
+	LineId INT NULL,
+	ZoneId INT NULL,
+	NodeTypeId INT NULL,
+	nOrder INT NULL,
+	rId NVARCHAR(50) NULL
+);

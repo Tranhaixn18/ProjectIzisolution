@@ -1,0 +1,210 @@
+﻿@model List<Model.Models.LineMornitorModel>
+
+@using System.Configuration;
+@{
+    ViewBag.Title = "LineMornitoring";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <style>
+        .label {
+            font-size: 100%;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
+}
+<h3 style="margin-top: -10px;">@Resources.Language.List @Resources.Language.ByLine</h3>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("LineMornitoring", "LineOnline", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        @Html.Partial("~/Views/Common/TempNodeLine.cshtml")
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.FromDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divFromDate" class="input-group input-append">
+                                <input id="StartDate" name="StartDate" data-format="yyyy/MM/dd" value="@ViewBag.StartDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="control-label">@Resources.Language.ToDate</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div id="divToDate" class="input-group input-append">
+                                <input id="EndDate" name="EndDate" data-format="yyyy/MM/dd" value="@ViewBag.EndDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                                <div class="input-group-addon">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="control-label">Trạng thái</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select id="Status" name="Status" class="form-control col-md-7 col-xs-12">
+                                @{
+                                    var strSelect = "";
+                                    for (int i = 0; i < 7; i++)
+                                    {
+                                        if (ViewBag.Status[i].Value == ViewBag.Statuss.ToString())
+                                        {
+                                            strSelect = " selected ";
+                                        }
+                                        else
+                                        {
+                                            strSelect = "";
+                                        }
+                                        <option value="@ViewBag.Status[i].Value" @strSelect>@ViewBag.Status[i].Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Chuyền</th>
+                            <th>Lệnh sản xuất</th>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng kế hoạch</th>
+                            <th>Hình ảnh</th>
+                            <th>@Resources.Language.PlanStart</th>
+                            <th>@Resources.Language.PlanFinish</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 12%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                <tr>
+                                    <td>@iCount</td>
+                                    <td>@ev.LineName</td>
+                                    <td>@ev.ProductionName </td>
+                                    <td>[@ev.ProductCode] @ev.ProductName </td>
+                                    <td>@ev.PlanQuantity</td>
+                                    <td></td>
+                                    <td>
+                                        @if (ev.Started != null)
+                                        {
+                                            <span>@Convert.ToDateTime(ev.Started).ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (ev.Ended != null)
+                                        {
+                                            <span>@Convert.ToDateTime(ev.Ended).ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (ev.Status == 2)
+                                        {
+                                            <span class="label label-danger">Tạm dừng</span>
+                                        }
+                                        else if (ev.Status == 1)
+                                        {
+                                            <span class="label label-warning">Đang chạy</span>
+                                        }
+                                        else if (ev.Status == 0)
+                                        {
+                                            <span class="label label-primary">Kế hoạch</span>
+                                        }
+                                        else if (ev.Status == 3)
+                                        {
+                                            <span class="label label-success">Hoàn thành</span>
+                                        }
+                                        else if (ev.Status == 4)
+                                        {<span class="label label-success">Quá hạn</span> }
+                                        else if (ev.Status == 5)
+                                        {<span class="label label-success">Hủy bỏ</span>}
+                                    </td>
+                                    <td>
+                                        @if (ev.IsAuto == false && ev.Status == 0)
+                                        {
+                                            <a href="/LineOnline/SendStatusForRun/@ev.Id" class="btn btn-success btn-block"><i class="fa fa-play-circle-o"></i> Chạy </a>
+
+                                            <a href="/LineOnline/SendStatusForComplete/@ev.Id" class="btn btn-warning btn-block"> Kết thúc </a>
+                                        }
+                                        else if (ev.IsAuto == false && ev.Status == 1)
+                                        {
+                                            <a href="/LineOnline/SendStatusForStop/@ev.Id" class="btn btn-danger btn-block"><i class="fa fa-stop-circle-o"></i> Tạm dừng </a>
+                                        }
+                                        else if (ev.IsAuto == false && ev.Status == 2)
+                                        {
+                                            <a href="/LineOnline/SendStatusForRun/@ev.Id" class="btn btn-success btn-block"><i class="fa fa-play-circle-o"></i> Chạy </a>
+                                        }
+                                    </td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $('#divFromDate').datetimepicker({
+            pickTime: false
+        });
+        $('#divToDate').datetimepicker({
+            pickTime: false
+        });
+
+        //$('#button-search').on('click', function () {
+        //    $('#hello').show().find('div, hidden').prop('disabled', false);
+        //});
+
+    </script>
+}
+
